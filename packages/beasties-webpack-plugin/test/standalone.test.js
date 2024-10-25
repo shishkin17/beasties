@@ -14,40 +14,40 @@
  * the License.
  */
 
-import { describe, test, expect, it, beforeAll } from 'vitest'
-import { compile, compileToHtml, readFile } from './_helpers.js';
+import { beforeAll, describe, expect, it } from 'vitest'
+import { compile, compileToHtml, readFile } from './_helpers.js'
 
 function configure(config) {
   config.module.rules.push(
     {
       test: /\.css$/,
-      loader: 'css-loader'
+      loader: 'css-loader',
     },
     {
       test: /\.html$/,
-      loader: 'file-loader?name=[name].[ext]'
-    }
-  );
+      loader: 'file-loader?name=[name].[ext]',
+    },
+  )
 }
 
-test('webpack compilation', async () => {
-  const info = await compile('fixtures/raw/index.js', configure);
-  expect(info.assets).toHaveLength(2);
-  expect(await readFile('fixtures/raw/dist/index.html')).toMatchSnapshot();
-});
+it('webpack compilation', async () => {
+  const info = await compile('fixtures/raw/index.js', configure)
+  expect(info.assets).toHaveLength(2)
+  expect(await readFile('fixtures/raw/dist/index.html')).toMatchSnapshot()
+})
 
-describe('Usage without html-webpack-plugin', () => {
-  let output;
+describe('usage without html-webpack-plugin', () => {
+  let output
   beforeAll(async () => {
-    output = await compileToHtml('raw', configure);
-  });
+    output = await compileToHtml('raw', configure)
+  })
 
   it('should process the first html asset', () => {
-    const { html, document } = output;
-    expect(document.querySelectorAll('style')).toHaveLength(1);
-    expect(document.getElementById('unused')).toBeNull();
-    expect(document.getElementById('used')).not.toBeNull();
-    expect(document.getElementById('used').textContent).toMatchSnapshot();
-    expect(html).toMatchSnapshot();
-  });
-});
+    const { html, document } = output
+    expect(document.querySelectorAll('style')).toHaveLength(1)
+    expect(document.getElementById('unused')).toBeNull()
+    expect(document.getElementById('used')).not.toBeNull()
+    expect(document.getElementById('used').textContent).toMatchSnapshot()
+    expect(html).toMatchSnapshot()
+  })
+})

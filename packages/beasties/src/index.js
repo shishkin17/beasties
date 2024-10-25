@@ -14,9 +14,8 @@
  * the License.
  */
 
-import { readFile } from 'fs';
-import { createDocument, serializeDocument } from './dom';
-import path from 'path';
+import { readFile } from 'node:fs'
+import path from 'node:path'
 import {
   applyMarkedSelectors,
   markOnly,
@@ -24,9 +23,10 @@ import {
   serializeStylesheet,
   validateMediaQuery,
   walkStyleRules,
-  walkStyleRulesWithReverseMirror
-} from './css';
-import { createLogger, isSubpath } from './util';
+  walkStyleRulesWithReverseMirror,
+} from './css'
+import { createDocument, serializeDocument } from './dom'
+import { createLogger, isSubpath } from './util'
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
@@ -53,7 +53,7 @@ import { createLogger, isSubpath } from './util';
  * - **"none":** Remove all keyframes rules.
  * @typedef {('critical'|'all'|'none')} KeyframeStrategy
  * @private
- * @property {String} keyframes     Which {@link KeyframeStrategy keyframe strategy} to use (default: `critical`)_
+ * @property {string} keyframes     Which {@link KeyframeStrategy keyframe strategy} to use (default: `critical`)_
  */
 
 /**
@@ -86,29 +86,29 @@ import { createLogger, isSubpath } from './util';
  * All optional. Pass them to `new Beasties({ ... })`.
  * @public
  * @typedef Options
- * @property {String} path     Base path location of the CSS files _(default: `''`)_
- * @property {String} publicPath     Public path of the CSS resources. This prefix is removed from the href _(default: `''`)_
- * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
- * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
- * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
- * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `false`)_
- * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single `<style>` tag _(default: `true`)_
- * @property {String[]} additionalStylesheets Glob for matching other stylesheets to be used while looking for critical CSS.
- * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
- * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
- * @property {Boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
- * @property {Boolean} preloadFonts Preloads critical fonts _(default: `true`)_
- * @property {Boolean} fonts        Shorthand for setting `inlineFonts` + `preloadFonts`
+ * @property {string} path     Base path location of the CSS files _(default: `''`)_
+ * @property {string} publicPath     Public path of the CSS resources. This prefix is removed from the href _(default: `''`)_
+ * @property {boolean} external     Inline styles from external stylesheets _(default: `true`)_
+ * @property {number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
+ * @property {number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
+ * @property {boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `false`)_
+ * @property {boolean} mergeStylesheets Merged inlined stylesheets into a single `<style>` tag _(default: `true`)_
+ * @property {string[]} additionalStylesheets Glob for matching other stylesheets to be used while looking for critical CSS.
+ * @property {string} preload       Which {@link PreloadStrategy preload strategy} to use
+ * @property {boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
+ * @property {boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
+ * @property {boolean} preloadFonts Preloads critical fonts _(default: `true`)_
+ * @property {boolean} fonts        Shorthand for setting `inlineFonts` + `preloadFonts`
  *  - Values:
  *  - `true` to inline critical font-face rules and preload the fonts
  *  - `false` to don't inline any font-face rules and don't preload fonts
- * @property {String} keyframes     Controls which keyframes rules are inlined.
+ * @property {string} keyframes     Controls which keyframes rules are inlined.
  *  - Values:
  *  - `"critical"`: _(default)_ inline keyframes rules used by the critical CSS
  *  - `"all"` inline all keyframes rules
  *  - `"none"` remove all keyframes rules
- * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
- * @property {String} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
+ * @property {boolean} compress     Compress resulting critical CSS _(default: `true`)_
+ * @property {string} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
  * @property {object} logger        Provide a custom logger interface {@link Logger logger}
  */
 
@@ -123,305 +123,315 @@ export default class Beasties {
         reduceInlineStyles: true,
         pruneSource: false,
         additionalStylesheets: [],
-        allowRules: []
+        allowRules: [],
       },
-      options || {}
-    );
+      options || {},
+    )
 
-    this.urlFilter = this.options.filter;
+    this.urlFilter = this.options.filter
     if (this.urlFilter instanceof RegExp) {
-      this.urlFilter = this.urlFilter.test.bind(this.urlFilter);
+      this.urlFilter = this.urlFilter.test.bind(this.urlFilter)
     }
 
-    this.logger = this.options.logger || createLogger(this.options.logLevel);
+    this.logger = this.options.logger || createLogger(this.options.logLevel)
   }
 
   /**
    * Read the contents of a file from the specified filesystem or disk
    */
   readFile(filename) {
-    const fs = this.fs;
+    const fs = this.fs
     return new Promise((resolve, reject) => {
       const callback = (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
-      };
-      if (fs && fs.readFile) {
-        fs.readFile(filename, callback);
-      } else {
-        readFile(filename, 'utf8', callback);
+        if (err)
+          reject(err)
+        else resolve(data)
       }
-    });
+      if (fs && fs.readFile) {
+        fs.readFile(filename, callback)
+      }
+      else {
+        readFile(filename, 'utf8', callback)
+      }
+    })
   }
 
   /**
    * Apply critical CSS processing to the html
    */
   async process(html) {
-    const start = Date.now();
+    const start = Date.now()
 
     // Parse the generated HTML in a DOM we can mutate
-    const document = createDocument(html);
+    const document = createDocument(html)
 
     if (this.options.additionalStylesheets.length > 0) {
-      this.embedAdditionalStylesheet(document);
+      this.embedAdditionalStylesheet(document)
     }
 
     // `external:false` skips processing of external sheets
     if (this.options.external !== false) {
       const externalSheets = [].slice.call(
-        document.querySelectorAll('link[rel="stylesheet"]')
-      );
+        document.querySelectorAll('link[rel="stylesheet"]'),
+      )
 
       await Promise.all(
-        externalSheets.map((link) => this.embedLinkedStylesheet(link, document))
-      );
+        externalSheets.map(link => this.embedLinkedStylesheet(link, document)),
+      )
     }
 
     // go through all the style tags in the document and reduce them to only critical CSS
-    const styles = this.getAffectedStyleTags(document);
+    const styles = this.getAffectedStyleTags(document)
 
     await Promise.all(
-      styles.map((style) => this.processStyle(style, document))
-    );
+      styles.map(style => this.processStyle(style, document)),
+    )
 
     if (this.options.mergeStylesheets !== false && styles.length !== 0) {
-      await this.mergeStylesheets(document);
+      await this.mergeStylesheets(document)
     }
 
     // serialize the document back to HTML and we're done
-    const output = serializeDocument(document);
-    const end = Date.now();
-    this.logger.info(`Time ${end - start}ms`);
-    return output;
+    const output = serializeDocument(document)
+    const end = Date.now()
+    this.logger.info(`Time ${end - start}ms`)
+    return output
   }
 
   /**
    * Get the style tags that need processing
    */
   getAffectedStyleTags(document) {
-    const styles = [...document.querySelectorAll('style')];
+    const styles = [...document.querySelectorAll('style')]
 
     // `inline:false` skips processing of inline stylesheets
     if (this.options.reduceInlineStyles === false) {
-      return styles.filter((style) => style.$$external);
+      return styles.filter(style => style.$$external)
     }
-    return styles;
+    return styles
   }
 
   async mergeStylesheets(document) {
-    const styles = this.getAffectedStyleTags(document);
+    const styles = this.getAffectedStyleTags(document)
     if (styles.length === 0) {
       this.logger.warn(
-        'Merging inline stylesheets into a single <style> tag skipped, no inline stylesheets to merge'
-      );
-      return;
+        'Merging inline stylesheets into a single <style> tag skipped, no inline stylesheets to merge',
+      )
+      return
     }
-    const first = styles[0];
-    let sheet = first.textContent;
+    const first = styles[0]
+    let sheet = first.textContent
 
     for (let i = 1; i < styles.length; i++) {
-      const node = styles[i];
-      sheet += node.textContent;
-      node.remove();
+      const node = styles[i]
+      sheet += node.textContent
+      node.remove()
     }
 
-    first.textContent = sheet;
+    first.textContent = sheet
   }
 
   /**
    * Given href, find the corresponding CSS asset
    */
   async getCssAsset(href) {
-    const outputPath = this.options.path;
-    const publicPath = this.options.publicPath;
+    const outputPath = this.options.path
+    const publicPath = this.options.publicPath
 
     // CHECK - the output path
     // path on disk (with output.publicPath removed)
-    let normalizedPath = href.replace(/^\//, '');
-    const pathPrefix = (publicPath || '').replace(/(^\/|\/$)/g, '') + '/';
+    let normalizedPath = href.replace(/^\//, '')
+    const pathPrefix = `${(publicPath || '').replace(/(^\/|\/$)/g, '')}/`
     if (normalizedPath.startsWith(pathPrefix)) {
       normalizedPath = normalizedPath
         .substring(pathPrefix.length)
-        .replace(/^\//, '');
+        .replace(/^\//, '')
     }
 
     // Ignore remote stylesheets
     if (/^https?:\/\//.test(normalizedPath) || href.startsWith('//')) {
-      return undefined;
+      return undefined
     }
 
-    const filename = path.resolve(outputPath, normalizedPath);
+    const filename = path.resolve(outputPath, normalizedPath)
     // Check if the resolved path is valid
     if (!isSubpath(outputPath, filename)) {
-      return undefined;
+      return undefined
     }
 
-    let sheet;
+    let sheet
 
     try {
-      sheet = await this.readFile(filename);
-    } catch (e) {
-      this.logger.warn(`Unable to locate stylesheet: ${filename}`);
+      sheet = await this.readFile(filename)
+    }
+    catch {
+      this.logger.warn(`Unable to locate stylesheet: ${filename}`)
     }
 
-    return sheet;
+    return sheet
   }
 
   checkInlineThreshold(link, style, sheet) {
     if (
-      this.options.inlineThreshold &&
-      sheet.length < this.options.inlineThreshold
+      this.options.inlineThreshold
+      && sheet.length < this.options.inlineThreshold
     ) {
-      const href = style.$$name;
-      style.$$reduce = false;
+      const href = style.$$name
+      style.$$reduce = false
       this.logger.info(
-        `\u001b[32mInlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})\u001b[39m`
-      );
-      link.remove();
-      return true;
+        `\u001B[32mInlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})\u001B[39m`,
+      )
+      link.remove()
+      return true
     }
 
-    return false;
+    return false
   }
 
   /**
    * Inline the stylesheets from options.additionalStylesheets (assuming it passes `options.filter`)
    */
   async embedAdditionalStylesheet(document) {
-    const styleSheetsIncluded = [];
+    const styleSheetsIncluded = []
 
     const sources = await Promise.all(
       this.options.additionalStylesheets.map((cssFile) => {
         if (styleSheetsIncluded.includes(cssFile)) {
-          return;
+          return undefined
         }
-        styleSheetsIncluded.push(cssFile);
-        const style = document.createElement('style');
-        style.$$external = true;
-        return this.getCssAsset(cssFile, style).then((sheet) => [sheet, style]);
-      })
-    );
+        styleSheetsIncluded.push(cssFile)
+        const style = document.createElement('style')
+        style.$$external = true
+        return this.getCssAsset(cssFile, style).then(sheet => [sheet, style])
+      }),
+    )
 
     sources.forEach(([sheet, style]) => {
-      if (!sheet) return;
-      style.textContent = sheet;
-      document.head.appendChild(style);
-    });
+      if (!sheet)
+        return
+      style.textContent = sheet
+      document.head.appendChild(style)
+    })
   }
 
   /**
    * Inline the target stylesheet referred to by a <link rel="stylesheet"> (assuming it passes `options.filter`)
    */
   async embedLinkedStylesheet(link, document) {
-    const href = link.getAttribute('href');
-    let media = link.getAttribute('media');
+    const href = link.getAttribute('href')
+    let media = link.getAttribute('media')
 
     if (media && !validateMediaQuery(media)) {
-      media = undefined;
+      media = undefined
     }
 
-    const preloadMode = this.options.preload;
+    const preloadMode = this.options.preload
 
     // skip filtered resources, or network resources if no filter is provided
     if (this.urlFilter ? this.urlFilter(href) : !href?.endsWith('.css')) {
-      return undefined;
+      return undefined
     }
 
     // the reduced critical CSS gets injected into a new <style> tag
-    const style = document.createElement('style');
-    style.$$external = true;
-    const sheet = await this.getCssAsset(href, style);
+    const style = document.createElement('style')
+    style.$$external = true
+    const sheet = await this.getCssAsset(href, style)
 
     if (!sheet) {
-      return;
+      return
     }
 
-    style.textContent = sheet;
-    style.$$name = href;
-    style.$$links = [link];
-    link.parentNode.insertBefore(style, link);
+    style.textContent = sheet
+    style.$$name = href
+    style.$$links = [link]
+    link.parentNode.insertBefore(style, link)
 
     if (this.checkInlineThreshold(link, style, sheet)) {
-      return;
+      return
     }
 
     // CSS loader is only injected for the first sheet, then this becomes an empty string
-    let cssLoaderPreamble =
-      "function $loadcss(u,m,l){(l=document.createElement('link')).rel='stylesheet';l.href=u;document.head.appendChild(l)}";
-    const lazy = preloadMode === 'js-lazy';
+    let cssLoaderPreamble
+      = 'function $loadcss(u,m,l){(l=document.createElement(\'link\')).rel=\'stylesheet\';l.href=u;document.head.appendChild(l)}'
+    const lazy = preloadMode === 'js-lazy'
     if (lazy) {
       cssLoaderPreamble = cssLoaderPreamble.replace(
         'l.href',
-        "l.media='print';l.onload=function(){l.media=m};l.href"
-      );
+        'l.media=\'print\';l.onload=function(){l.media=m};l.href',
+      )
     }
 
     // Allow disabling any mutation of the stylesheet link:
-    if (preloadMode === false) return;
+    if (preloadMode === false)
+      return
 
-    let noscriptFallback = false;
-    let updateLinkToPreload = false;
-    const noscriptLink = link.cloneNode(false);
+    let noscriptFallback = false
+    let updateLinkToPreload = false
+    const noscriptLink = link.cloneNode(false)
 
     if (preloadMode === 'body') {
-      document.body.appendChild(link);
-    } else {
+      document.body.appendChild(link)
+    }
+    else {
       if (preloadMode === 'js' || preloadMode === 'js-lazy') {
-        const script = document.createElement('script');
-        script.setAttribute('data-href', href);
-        script.setAttribute('data-media', media || 'all');
-        const js = `${cssLoaderPreamble}$loadcss(document.currentScript.dataset.href,document.currentScript.dataset.media)`;
+        const script = document.createElement('script')
+        script.setAttribute('data-href', href)
+        script.setAttribute('data-media', media || 'all')
+        const js = `${cssLoaderPreamble}$loadcss(document.currentScript.dataset.href,document.currentScript.dataset.media)`
         // script.appendChild(document.createTextNode(js));
-        script.textContent = js;
-        link.parentNode.insertBefore(script, link.nextSibling);
-        style.$$links.push(script);
-        cssLoaderPreamble = '';
-        noscriptFallback = true;
-        updateLinkToPreload = true;
-      } else if (preloadMode === 'media') {
+        script.textContent = js
+        link.parentNode.insertBefore(script, link.nextSibling)
+        style.$$links.push(script)
+        cssLoaderPreamble = ''
+        noscriptFallback = true
+        updateLinkToPreload = true
+      }
+      else if (preloadMode === 'media') {
         // @see https://github.com/filamentgroup/loadCSS/blob/af1106cfe0bf70147e22185afa7ead96c01dec48/src/loadCSS.js#L26
-        link.setAttribute('media', 'print');
-        link.setAttribute('onload', `this.media='${media || 'all'}'`);
-        noscriptFallback = true;
-      } else if (preloadMode === 'swap-high') {
+        link.setAttribute('media', 'print')
+        link.setAttribute('onload', `this.media='${media || 'all'}'`)
+        noscriptFallback = true
+      }
+      else if (preloadMode === 'swap-high') {
         // @see http://filamentgroup.github.io/loadCSS/test/new-high.html
-        link.setAttribute('rel', 'alternate stylesheet preload');
-        link.setAttribute('title', 'styles');
-        link.setAttribute('onload', `this.title='';this.rel='stylesheet'`);
-        noscriptFallback = true;
-      } else if (preloadMode === 'swap') {
-        link.setAttribute('onload', "this.rel='stylesheet'");
-        noscriptFallback = true;
-      } else {
-        const bodyLink = link.cloneNode(false);
+        link.setAttribute('rel', 'alternate stylesheet preload')
+        link.setAttribute('title', 'styles')
+        link.setAttribute('onload', `this.title='';this.rel='stylesheet'`)
+        noscriptFallback = true
+      }
+      else if (preloadMode === 'swap') {
+        link.setAttribute('onload', 'this.rel=\'stylesheet\'')
+        noscriptFallback = true
+      }
+      else {
+        const bodyLink = link.cloneNode(false)
 
         // If an ID is present, remove it to avoid collisions.
-        bodyLink.removeAttribute('id');
+        bodyLink.removeAttribute('id')
 
-        document.body.appendChild(bodyLink);
-        updateLinkToPreload = true;
+        document.body.appendChild(bodyLink)
+        updateLinkToPreload = true
       }
     }
 
     if (
-      this.options.noscriptFallback !== false &&
-      noscriptFallback &&
+      this.options.noscriptFallback !== false
+      && noscriptFallback
       // Don't parse the URL if it contains </noscript> as it might cause unexpected behavior
-      !href.includes('</noscript>')
+      && !href.includes('</noscript>')
     ) {
-      const noscript = document.createElement('noscript');
+      const noscript = document.createElement('noscript')
       // If an ID is present, remove it to avoid collisions.
-      noscriptLink.removeAttribute('id');
-      noscript.appendChild(noscriptLink);
-      link.parentNode.insertBefore(noscript, link.nextSibling);
-      style.$$links.push(noscript);
+      noscriptLink.removeAttribute('id')
+      noscript.appendChild(noscriptLink)
+      link.parentNode.insertBefore(noscript, link.nextSibling)
+      style.$$links.push(noscript)
     }
 
     if (updateLinkToPreload) {
       // Switch the current link tag to preload
-      link.setAttribute('rel', 'preload');
-      link.setAttribute('as', 'style');
+      link.setAttribute('rel', 'preload')
+      link.setAttribute('as', 'style')
     }
   }
 
@@ -430,68 +440,73 @@ export default class Beasties {
    */
   pruneSource(style, before, sheetInverse) {
     // if external stylesheet would be below minimum size, just inline everything
-    const minSize = this.options.minimumExternalSize;
-    const name = style.$$name;
+    const minSize = this.options.minimumExternalSize
+    const name = style.$$name
     if (minSize && sheetInverse.length < minSize) {
       this.logger.info(
-        `\u001b[32mInlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001b[39m`
-      );
-      style.textContent = before;
+        `\u001B[32mInlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001B[39m`,
+      )
+      style.textContent = before
       // remove any associated external resources/loaders:
       if (style.$$links) {
         for (const link of style.$$links) {
-          const parent = link.parentNode;
-          if (parent) parent.removeChild(link);
+          const parent = link.parentNode
+          if (parent)
+            parent.removeChild(link)
         }
       }
 
-      return true;
+      return true
     }
 
-    return false;
+    return false
   }
 
   /**
    * Parse the stylesheet within a <style> element, then reduce it to contain only rules used by the document.
    */
   async processStyle(style, document) {
-    if (style.$$reduce === false) return;
+    if (style.$$reduce === false)
+      return
 
-    const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
-    const options = this.options;
-    const beastiesContainer = document.beastiesContainer;
-    let keyframesMode = options.keyframes || 'critical';
+    const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS'
+    const options = this.options
+    const beastiesContainer = document.beastiesContainer
+    let keyframesMode = options.keyframes || 'critical'
     // we also accept a boolean value for options.keyframes
-    if (keyframesMode === true) keyframesMode = 'all';
-    if (keyframesMode === false) keyframesMode = 'none';
+    if (keyframesMode === true)
+      keyframesMode = 'all'
+    if (keyframesMode === false)
+      keyframesMode = 'none'
 
-    let sheet = style.textContent;
+    let sheet = style.textContent
 
     // store a reference to the previous serialized stylesheet for reporting stats
-    const before = sheet;
+    const before = sheet
 
     // Skip empty stylesheets
-    if (!sheet) return;
+    if (!sheet)
+      return
 
-    const ast = parseStylesheet(sheet);
-    const astInverse = options.pruneSource ? parseStylesheet(sheet) : null;
+    const ast = parseStylesheet(sheet)
+    const astInverse = options.pruneSource ? parseStylesheet(sheet) : null
 
     // a string to search for font names (very loose)
-    let criticalFonts = '';
+    let criticalFonts = ''
 
-    const failedSelectors = [];
+    const failedSelectors = []
 
-    const criticalKeyframeNames = new Set();
+    const criticalKeyframeNames = new Set()
 
-    let includeNext = false;
-    let includeAll = false;
-    let excludeNext = false;
-    let excludeAll = false;
+    let includeNext = false
+    let includeAll = false
+    let excludeNext = false
+    let excludeAll = false
 
-    const shouldPreloadFonts =
-      options.fonts === true || options.preloadFonts === true;
-    const shouldInlineFonts =
-      options.fonts !== false && options.inlineFonts === true;
+    const shouldPreloadFonts
+      = options.fonts === true || options.preloadFonts === true
+    const shouldInlineFonts
+      = options.fonts !== false && options.inlineFonts === true
 
     // Walk all CSS rules, marking unused rules with `.$$remove=true` for removal in the second pass.
     // This first pass is also used to collect font and keyframe usage used in the second pass.
@@ -501,29 +516,31 @@ export default class Beasties {
         if (rule.type === 'comment') {
           // we might want to remove a leading ! on comment blocks
           // beasties can be part of "legal comments" which aren't striped on build
-          const beastiesComment = rule.text.match(/^(?<!\! )beasties:(.*)/);
-          const command = beastiesComment && beastiesComment[1];
+          // TODO: address regexp
+          // eslint-disable-next-line regexp/no-useless-assertions
+          const beastiesComment = rule.text.match(/^(?<!! )beasties:(.*)/)
+          const command = beastiesComment && beastiesComment[1]
 
           if (command) {
             switch (command) {
               case 'include':
-                includeNext = true;
-                break;
+                includeNext = true
+                break
               case 'exclude':
-                excludeNext = true;
-                break;
+                excludeNext = true
+                break
               case 'include start':
-                includeAll = true;
-                break;
+                includeAll = true
+                break
               case 'include end':
-                includeAll = false;
-                break;
+                includeAll = false
+                break
               case 'exclude start':
-                excludeAll = true;
-                break;
+                excludeAll = true
+                break
               case 'exclude end':
-                excludeAll = false;
-                break;
+                excludeAll = false
+                break
             }
           }
         }
@@ -531,21 +548,21 @@ export default class Beasties {
         if (rule.type === 'rule') {
           // Handle comment based markers
           if (includeNext) {
-            includeNext = false;
-            return true;
+            includeNext = false
+            return true
           }
 
           if (excludeNext) {
-            excludeNext = false;
-            return false;
+            excludeNext = false
+            return false
           }
 
           if (includeAll) {
-            return true;
+            return true
           }
 
           if (excludeAll) {
-            return false;
+            return false
           }
 
           // Filter the selector list down to only those match
@@ -553,21 +570,22 @@ export default class Beasties {
             // Validate rule with 'allowRules' option
             const isAllowedRule = options.allowRules.some((exp) => {
               if (exp instanceof RegExp) {
-                return exp.test(sel);
+                return exp.test(sel)
               }
-              return exp === sel;
-            });
-            if (isAllowedRule) return true;
+              return exp === sel
+            })
+            if (isAllowedRule)
+              return true
 
             // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
             // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
             if (
-              sel === ':root' ||
-              sel === 'html' ||
-              sel === 'body' ||
-              /^::?(before|after)$/.test(sel)
+              sel === ':root'
+              || sel === 'html'
+              || sel === 'body'
+              || /^::?(?:before|after)$/.test(sel)
             ) {
-              return true;
+              return true
             }
             sel = sel
               .replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '')
@@ -575,39 +593,42 @@ export default class Beasties {
               // Remove tailing or leading commas from cleaned sub selector `is(.active, :hover)` -> `is(.active)`.
               .replace(/\(\s*,/g, '(')
               .replace(/,\s*\)/g, ')')
-              .trim();
-            if (!sel) return false;
+              .trim()
+            if (!sel)
+              return false
 
             try {
-              return beastiesContainer.exists(sel);
-            } catch (e) {
-              failedSelectors.push(sel + ' -> ' + e.message);
-              return false;
+              return beastiesContainer.exists(sel)
             }
-          });
+            catch (e) {
+              failedSelectors.push(`${sel} -> ${e.message}`)
+              return false
+            }
+          })
 
           // If there are no matched selectors, remove the rule:
           if (!rule.selector) {
-            return false;
+            return false
           }
 
           if (rule.nodes) {
             for (const decl of rule.nodes) {
               // detect used fonts
               if (
-                shouldInlineFonts &&
-                decl.prop &&
-                /\bfont(-family)?\b/i.test(decl.prop)
+                shouldInlineFonts
+                && decl.prop
+                && /\bfont(?:-family)?\b/i.test(decl.prop)
               ) {
-                criticalFonts += ' ' + decl.value;
+                criticalFonts += ` ${decl.value}`
               }
 
               // detect used keyframes
               if (decl.prop === 'animation' || decl.prop === 'animation-name') {
                 for (const name of decl.value.split(/\s+/)) {
                   // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
-                  const nameTrimmed = name.trim();
-                  if (nameTrimmed) criticalKeyframeNames.add(nameTrimmed);
+                  const nameTrimmed = name.trim()
+                  if (nameTrimmed)
+                    criticalKeyframeNames.add(nameTrimmed)
                 }
               }
             }
@@ -615,134 +636,140 @@ export default class Beasties {
         }
 
         // keep font rules, they're handled in the second pass:
-        if (rule.type === 'atrule' && rule.name === 'font-face') return;
+        if (rule.type === 'atrule' && rule.name === 'font-face')
+          return
 
         // If there are no remaining rules, remove the whole rule:
-        const rules = rule.nodes?.filter((rule) => !rule.$$remove);
-        return !rules || rules.length !== 0;
-      })
-    );
+        const rules = rule.nodes?.filter(rule => !rule.$$remove)
+        return !rules || rules.length !== 0
+      }),
+    )
 
     if (failedSelectors.length !== 0) {
       this.logger.warn(
         `${
           failedSelectors.length
         } rules skipped due to selector errors:\n  ${failedSelectors.join(
-          '\n  '
-        )}`
-      );
+          '\n  ',
+        )}`,
+      )
     }
 
-    const preloadedFonts = new Set();
+    const preloadedFonts = new Set()
     // Second pass, using data picked up from the first
     walkStyleRulesWithReverseMirror(ast, astInverse, (rule) => {
       // remove any rules marked in the first pass
-      if (rule.$$remove === true) return false;
+      if (rule.$$remove === true)
+        return false
 
-      applyMarkedSelectors(rule);
+      applyMarkedSelectors(rule)
 
       // prune @keyframes rules
       if (rule.type === 'atrule' && rule.name === 'keyframes') {
-        if (keyframesMode === 'none') return false;
-        if (keyframesMode === 'all') return true;
-        return criticalKeyframeNames.has(rule.params);
+        if (keyframesMode === 'none')
+          return false
+        if (keyframesMode === 'all')
+          return true
+        return criticalKeyframeNames.has(rule.params)
       }
 
       // prune @font-face rules
       if (rule.type === 'atrule' && rule.name === 'font-face') {
-        let family, src;
+        let family, src
         for (const decl of rule.nodes) {
           if (decl.prop === 'src') {
-            // @todo parse this properly and generate multiple preloads with type="font/woff2" etc
-            src = (decl.value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/) || [])[2];
-          } else if (decl.prop === 'font-family') {
-            family = decl.value;
+            // TODO: parse this properly and generate multiple preloads with type="font/woff2" etc
+            // eslint-disable-next-line regexp/no-super-linear-backtracking,regexp/no-misleading-capturing-group
+            src = (decl.value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/) || [])[2]
+          }
+          else if (decl.prop === 'font-family') {
+            family = decl.value
           }
         }
 
         if (src && shouldPreloadFonts && !preloadedFonts.has(src)) {
-          preloadedFonts.add(src);
-          const preload = document.createElement('link');
-          preload.setAttribute('rel', 'preload');
-          preload.setAttribute('as', 'font');
-          preload.setAttribute('crossorigin', 'anonymous');
-          preload.setAttribute('href', src.trim());
-          document.head.appendChild(preload);
+          preloadedFonts.add(src)
+          const preload = document.createElement('link')
+          preload.setAttribute('rel', 'preload')
+          preload.setAttribute('as', 'font')
+          preload.setAttribute('crossorigin', 'anonymous')
+          preload.setAttribute('href', src.trim())
+          document.head.appendChild(preload)
         }
 
         // if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:
         if (
-          !shouldInlineFonts ||
-          !family ||
-          !src ||
-          !criticalFonts.includes(family)
+          !shouldInlineFonts
+          || !family
+          || !src
+          || !criticalFonts.includes(family)
         ) {
-          return false;
+          return false
         }
       }
-    });
+    })
 
     sheet = serializeStylesheet(ast, {
-      compress: this.options.compress !== false
-    });
+      compress: this.options.compress !== false,
+    })
 
     // If all rules were removed, get rid of the style element entirely
     if (sheet.trim().length === 0) {
       if (style.parentNode) {
-        style.remove();
+        style.remove()
       }
-      return;
+      return
     }
 
-    let afterText = '';
-    let styleInlinedCompletely = false;
+    let afterText = ''
+    let styleInlinedCompletely = false
     if (options.pruneSource) {
       const sheetInverse = serializeStylesheet(astInverse, {
-        compress: this.options.compress !== false
-      });
+        compress: this.options.compress !== false,
+      })
 
-      styleInlinedCompletely = this.pruneSource(style, before, sheetInverse);
+      styleInlinedCompletely = this.pruneSource(style, before, sheetInverse)
 
       if (styleInlinedCompletely) {
-        const percent = (sheetInverse.length / before.length) * 100;
+        const percent = (sheetInverse.length / before.length) * 100
         afterText = `, reducing non-inlined size ${
           percent | 0
-        }% to ${formatSize(sheetInverse.length)}`;
+        }% to ${formatSize(sheetInverse.length)}`
       }
     }
 
     // replace the inline stylesheet with its critical'd counterpart
     if (!styleInlinedCompletely) {
-      style.textContent = sheet;
+      style.textContent = sheet
     }
 
     // output stats
-    const percent = ((sheet.length / before.length) * 100) | 0;
+    const percent = ((sheet.length / before.length) * 100) | 0
     this.logger.info(
-      '\u001b[32mInlined ' +
-        formatSize(sheet.length) +
-        ' (' +
-        percent +
-        '% of original ' +
-        formatSize(before.length) +
-        ') of ' +
-        name +
-        afterText +
-        '.\u001b[39m'
-    );
+      `\u001B[32mInlined ${
+        formatSize(sheet.length)
+      } (${
+        percent
+      }% of original ${
+        formatSize(before.length)
+      }) of ${
+        name
+      }${afterText
+      }.\u001B[39m`,
+    )
   }
 }
 
 function formatSize(size) {
   if (size <= 0) {
-    return '0 bytes';
+    return '0 bytes'
   }
 
-  const abbreviations = ['bytes', 'kB', 'MB', 'GB'];
-  const index = Math.floor(Math.log(size) / Math.log(1024));
-  const roundedSize = size / Math.pow(1024, index);
+  const abbreviations = ['bytes', 'kB', 'MB', 'GB']
+  const index = Math.floor(Math.log(size) / Math.log(1024))
+  const roundedSize = size / 1024 ** index
   // bytes don't have a fraction
-  const fractionDigits = index === 0 ? 0 : 2;
+  const fractionDigits = index === 0 ? 0 : 2
 
-  return `${roundedSize.toFixed(fractionDigits)} ${abbreviations[index]}`;
+  return `${roundedSize.toFixed(fractionDigits)} ${abbreviations[index]}`
 }

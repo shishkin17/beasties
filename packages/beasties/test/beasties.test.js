@@ -14,32 +14,33 @@
  * the License.
  */
 
-import { describe, test, expect, it, vi } from 'vitest'
+import fs from 'node:fs'
+import path from 'node:path'
 
-import Beasties from '../src/index';
-import fs from 'fs';
-import path from 'path';
+import { describe, expect, it, vi } from 'vitest'
+import Beasties from '../src/index'
 
-const trim = (s) =>
-  s[0]
+function trim(s) {
+  return s[0]
     .trim()
-    .replace(new RegExp('^' + s[0].match(/^( {2}|\t)+/m)[0], 'gm'), '');
+    .replace(new RegExp(`^${s[0].match(/^( {2}|\t)+/m)[0]}`, 'gm'), '')
+}
 
-describe('Beasties', () => {
-  test('Basic Usage', async () => {
+describe('beasties', () => {
+  it('basic Usage', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: '/'
-    });
+      path: '/',
+    })
     const assets = {
       '/style.css': trim`
         h1 { color: blue; }
         h2.unused { color: red; }
         p { color: purple; }
         p.unused { color: orange; }
-      `
-    };
-    beasties.readFile = (filename) => assets[filename];
+      `,
+    }
+    beasties.readFile = filename => assets[filename]
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -50,38 +51,38 @@ describe('Beasties', () => {
           <p>This is a paragraph</p>
         </body>
       </html>
-    `);
-    expect(result).toMatch('<style>h1{color:blue}p{color:purple}</style>');
-    expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
-    expect(result).toMatchSnapshot();
-  });
+    `)
+    expect(result).toMatch('<style>h1{color:blue}p{color:purple}</style>')
+    expect(result).toMatch('<link rel="stylesheet" href="/style.css">')
+    expect(result).toMatchSnapshot()
+  })
 
-  test('Run on HTML file', async () => {
+  it('run on HTML file', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src')
-    });
+      path: path.join(__dirname, 'src'),
+    })
 
     const html = fs.readFileSync(
       path.join(__dirname, 'src/index.html'),
-      'utf8'
-    );
+      'utf8',
+    )
 
-    const result = await beasties.process(html);
-    expect(result).toMatchSnapshot();
-  });
+    const result = await beasties.process(html)
+    expect(result).toMatchSnapshot()
+  })
 
-  test('Does not encode HTML', async () => {
+  it('does not encode HTML', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: '/'
-    });
+      path: '/',
+    })
     const assets = {
       '/style.css': trim`
         h1 { color: blue; }
-      `
-    };
-    beasties.readFile = (filename) => assets[filename];
+      `,
+    }
+    beasties.readFile = filename => assets[filename]
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -92,24 +93,24 @@ describe('Beasties', () => {
           <h1>Hello World!</h1>
         </body>
       </html>
-    `);
-    expect(result).toMatch('<style>h1{color:blue}</style>');
-    expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
-    expect(result).toMatch('<title>$title</title>');
-  });
+    `)
+    expect(result).toMatch('<style>h1{color:blue}</style>')
+    expect(result).toMatch('<link rel="stylesheet" href="/style.css">')
+    expect(result).toMatch('<title>$title</title>')
+  })
 
-  test('should keep existing link tag attributes in the noscript link', async () => {
+  it('should keep existing link tag attributes in the noscript link', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
       path: '/',
-      preload: 'media'
-    });
+      preload: 'media',
+    })
     const assets = {
       '/style.css': trim`
         h1 { color: blue; }
-      `
-    };
-    beasties.readFile = (filename) => assets[filename];
+      `,
+    }
+    beasties.readFile = filename => assets[filename]
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -120,26 +121,26 @@ describe('Beasties', () => {
           <h1>Hello World!</h1>
         </body>
       </html>
-    `);
+    `)
 
-    expect(result).toMatch('<style>h1{color:blue}</style>');
+    expect(result).toMatch('<style>h1{color:blue}</style>')
     expect(result).toMatch(
-      `<link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" media="print" onload="this.media='all'">`
-    );
-    expect(result).toMatchSnapshot();
-  });
+      `<link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" media="print" onload="this.media='all'">`,
+    )
+    expect(result).toMatchSnapshot()
+  })
 
-  test('should keep existing link tag attributes', async () => {
+  it('should keep existing link tag attributes', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: '/'
-    });
+      path: '/',
+    })
     const assets = {
       '/style.css': trim`
         h1 { color: blue; }
-      `
-    };
-    beasties.readFile = (filename) => assets[filename];
+      `,
+    }
+    beasties.readFile = filename => assets[filename]
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -150,72 +151,80 @@ describe('Beasties', () => {
           <h1>Hello World!</h1>
         </body>
       </html>
-    `);
+    `)
 
-    expect(result).toMatch('<style>h1{color:blue}</style>');
+    expect(result).toMatch('<style>h1{color:blue}</style>')
     expect(result).toMatch(
-      `<link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+">`
-    );
-    expect(result).toMatchSnapshot();
-  });
+      `<link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+">`,
+    )
+    expect(result).toMatchSnapshot()
+  })
 
-  test('Does not decode entities in HTML document', async () => {
+  it('does not decode entities in HTML document', async () => {
     const beasties = new Beasties({
-      path: '/'
-    });
-    beasties.readFile = (filename) => assets[filename];
+      path: '/',
+    })
+    const assets = {
+      '/style.css': trim`
+        h1 { color: blue; }
+        h2.unused { color: red; }
+        p { color: purple; }
+        p.unused { color: orange; }
+      `,
+    }
+    beasties.readFile = filename => assets[filename]
     const result = await beasties.process(trim`
       <html>
         <body>
           &lt;h1&gt;Hello World!&lt;/h1&gt;
         </body>
       </html>
-    `);
-    expect(result).toMatch('&lt;h1&gt;Hello World!&lt;/h1&gt;');
-  });
+    `)
+    expect(result).toMatch('&lt;h1&gt;Hello World!&lt;/h1&gt;')
+  })
 
-  test('Prevent injection via media attr', async () => {
+  it('prevent injection via media attr', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
       path: path.join(__dirname, 'src'),
-      preload: 'media'
-    });
+      preload: 'media',
+    })
 
     const html = fs.readFileSync(
       path.join(__dirname, 'src/media-validation.html'),
-      'utf8'
-    );
+      'utf8',
+    )
 
-    const result = await beasties.process(html);
+    const result = await beasties.process(html)
     expect(result).toContain(
-      '<noscript><link rel="stylesheet" href="styles2.css" media="screen and (min-width: 480px)"></noscript>'
-    );
-    expect(result).toMatchSnapshot();
-  });
+      '<noscript><link rel="stylesheet" href="styles2.css" media="screen and (min-width: 480px)"></noscript>',
+    )
+    expect(result).toMatchSnapshot()
+  })
 
-  test('Skip invalid path', async () => {
-    const consoleSpy = vi.spyOn(console, 'warn');
+  it('skip invalid path', async () => {
+    const consoleSpy = vi.spyOn(console, 'warn')
 
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src')
-    });
+      path: path.join(__dirname, 'src'),
+    })
 
     const html = fs.readFileSync(
       path.join(__dirname, 'src/subpath-validation.html'),
-      'utf8'
-    );
+      'utf8',
+    )
 
-    const result = await beasties.process(html);
+    const result = await beasties.process(html)
     expect(consoleSpy).not.toHaveBeenCalledWith(
-      expect.stringContaining('Unable to locate stylesheet')
-    );
-    expect(result).toMatchSnapshot();
-  });
+      expect.stringContaining('Unable to locate stylesheet'),
+    )
+    expect(result).toMatchSnapshot()
+  })
 
   it('should not load stylesheets outside of the base path', async () => {
-    const beasties = new Beasties({ path: '/var/www' });
-    vi.spyOn(beasties, 'readFile');
+    const beasties = new Beasties({ path: '/var/www' })
+    vi.spyOn(beasties, 'readFile')
     await beasties.process(`
         <html>
             <head>
@@ -224,10 +233,10 @@ describe('Beasties', () => {
             </head>
             <body></body>
         </html>
-    `);
-    expect(beasties.readFile).toHaveBeenCalledWith('/var/www/file.css');
+    `)
+    expect(beasties.readFile).toHaveBeenCalledWith('/var/www/file.css')
     expect(beasties.readFile).not.toHaveBeenCalledWith(
-      '/company-secrets/secret.css'
-    );
-  });
-});
+      '/company-secrets/secret.css',
+    )
+  })
+})

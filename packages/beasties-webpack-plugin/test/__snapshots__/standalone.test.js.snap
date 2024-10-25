@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Usage without html-webpack-plugin > should process the first html asset 1`] = `
+exports[`usage without html-webpack-plugin > should process the first html asset 1`] = `
 "
       h1 {
         color: green;
@@ -8,7 +8,7 @@ exports[`Usage without html-webpack-plugin > should process the first html asset
     "
 `;
 
-exports[`Usage without html-webpack-plugin > should process the first html asset 2`] = `
+exports[`usage without html-webpack-plugin > should process the first html asset 2`] = `
 "<!DOCTYPE html>
 <html data-beasties-container>
   <head>

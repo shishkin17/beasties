@@ -1,3 +1,3 @@
-import html from './index.html';
+import html from './index.html'
 
-module.exports = html;
+module.exports = html

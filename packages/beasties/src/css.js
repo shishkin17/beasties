@@ -14,68 +14,70 @@
  * the License.
  */
 
-import { parse, stringify } from 'postcss';
-import mediaParser from 'postcss-media-query-parser';
+import { parse, stringify } from 'postcss'
+import mediaParser from 'postcss-media-query-parser'
 
 /**
  * Parse a textual CSS Stylesheet into a Stylesheet instance.
  * Stylesheet is a mutable postcss AST with format similar to CSSOM.
  * @see https://github.com/postcss/postcss/
  * @private
- * @param {String} stylesheet
+ * @param {string} stylesheet
  * @returns {css.Stylesheet} ast
  */
 export function parseStylesheet(stylesheet) {
-  return parse(stylesheet);
+  return parse(stylesheet)
 }
 
 /**
  * Serialize a postcss Stylesheet to a String of CSS.
  * @private
  * @param {css.Stylesheet} ast          A Stylesheet to serialize, such as one returned from `parseStylesheet()`
- * @param {Object} options              Options used by the stringify logic
- * @param {Boolean} [options.compress]  Compress CSS output (removes comments, whitespace, etc)
+ * @param {object} options              Options used by the stringify logic
+ * @param {boolean} [options.compress]  Compress CSS output (removes comments, whitespace, etc)
  */
 export function serializeStylesheet(ast, options) {
-  let cssStr = '';
+  let cssStr = ''
 
   stringify(ast, (result, node, type) => {
     if (node?.type === 'decl' && node.value.includes('</style>')) {
-      return;
+      return
     }
 
     if (!options.compress) {
-      cssStr += result;
-      return;
+      cssStr += result
+      return
     }
 
     // Simple minification logic
-    if (node?.type === 'comment') return;
+    if (node?.type === 'comment')
+      return
 
     if (node?.type === 'decl') {
-      const prefix = node.prop + node.raws.between;
+      const prefix = node.prop + node.raws.between
 
-      cssStr += result.replace(prefix, prefix.trim());
-      return;
+      cssStr += result.replace(prefix, prefix.trim())
+      return
     }
 
     if (type === 'start') {
       if (node.type === 'rule' && node.selectors) {
-        cssStr += node.selectors.join(',') + '{';
-      } else {
-        cssStr += result.replace(/\s\{$/, '{');
+        cssStr += `${node.selectors.join(',')}{`
       }
-      return;
+      else {
+        cssStr += result.replace(/\s\{$/, '{')
+      }
+      return
     }
 
     if (type === 'end' && result === '}' && node?.raws?.semicolon) {
-      cssStr = cssStr.slice(0, -1);
+      cssStr = cssStr.slice(0, -1)
     }
 
-    cssStr += result.trim();
-  });
+    cssStr += result.trim()
+  })
 
-  return cssStr;
+  return cssStr
 }
 
 /**
@@ -87,16 +89,16 @@ export function serializeStylesheet(ast, options) {
  */
 export function markOnly(predicate) {
   return (rule) => {
-    const sel = rule.selectors;
+    const sel = rule.selectors
     if (predicate(rule) === false) {
-      rule.$$remove = true;
+      rule.$$remove = true
     }
-    rule.$$markedSelectors = rule.selectors;
+    rule.$$markedSelectors = rule.selectors
     if (rule._other) {
-      rule._other.$$markedSelectors = rule._other.selectors;
+      rule._other.$$markedSelectors = rule._other.selectors
     }
-    rule.selectors = sel;
-  };
+    rule.selectors = sel
+  }
 }
 
 /**
@@ -106,10 +108,10 @@ export function markOnly(predicate) {
  */
 export function applyMarkedSelectors(rule) {
   if (rule.$$markedSelectors) {
-    rule.selectors = rule.$$markedSelectors;
+    rule.selectors = rule.$$markedSelectors
   }
   if (rule._other) {
-    applyMarkedSelectors(rule._other);
+    applyMarkedSelectors(rule._other)
   }
 }
 
@@ -122,12 +124,12 @@ export function applyMarkedSelectors(rule) {
 export function walkStyleRules(node, iterator) {
   node.nodes = node.nodes.filter((rule) => {
     if (hasNestedRules(rule)) {
-      walkStyleRules(rule, iterator);
+      walkStyleRules(rule, iterator)
     }
-    rule._other = undefined;
-    rule.filterSelectors = filterSelectors;
-    return iterator(rule) !== false;
-  });
+    rule._other = undefined
+    rule.filterSelectors = filterSelectors
+    return iterator(rule) !== false
+  })
 }
 
 /**
@@ -138,47 +140,49 @@ export function walkStyleRules(node, iterator) {
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node from the first tree, true to remove it from the second.
  */
 export function walkStyleRulesWithReverseMirror(node, node2, iterator) {
-  if (node2 === null) return walkStyleRules(node, iterator);
+  if (node2 === null)
+    return walkStyleRules(node, iterator);
 
   [node.nodes, node2.nodes] = splitFilter(
     node.nodes,
     node2.nodes,
     (rule, index, rules, rules2) => {
-      const rule2 = rules2[index];
+      const rule2 = rules2[index]
       if (hasNestedRules(rule)) {
-        walkStyleRulesWithReverseMirror(rule, rule2, iterator);
+        walkStyleRulesWithReverseMirror(rule, rule2, iterator)
       }
-      rule._other = rule2;
-      rule.filterSelectors = filterSelectors;
-      return iterator(rule) !== false;
-    }
-  );
+      rule._other = rule2
+      rule.filterSelectors = filterSelectors
+      return iterator(rule) !== false
+    },
+  )
 }
 
 // Checks if a node has nested rules, like @media
 // @keyframes are an exception since they are evaluated as a whole
 function hasNestedRules(rule) {
   return (
-    rule.nodes?.length &&
-    rule.name !== 'keyframes' &&
-    rule.name !== '-webkit-keyframes' &&
-    rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule')
-  );
+    rule.nodes?.length
+    && rule.name !== 'keyframes'
+    && rule.name !== '-webkit-keyframes'
+    && rule.nodes.some(n => n.type === 'rule' || n.type === 'atrule')
+  )
 }
 
 // Like [].filter(), but applies the opposite filtering result to a second copy of the Array without a second pass.
 // This is just a quicker version of generating the compliment of the set returned from a filter operation.
 function splitFilter(a, b, predicate) {
-  const aOut = [];
-  const bOut = [];
+  const aOut = []
+  const bOut = []
   for (let index = 0; index < a.length; index++) {
     if (predicate(a[index], index, a, b)) {
-      aOut.push(a[index]);
-    } else {
-      bOut.push(a[index]);
+      aOut.push(a[index])
+    }
+    else {
+      bOut.push(a[index])
     }
   }
-  return [aOut, bOut];
+  return [aOut, bOut]
 }
 
 // can be invoked on a style rule to subset its selectors (with reverse mirroring)
@@ -187,17 +191,18 @@ function filterSelectors(predicate) {
     const [a, b] = splitFilter(
       this.selectors,
       this._other.selectors,
-      predicate
-    );
-    this.selectors = a;
-    this._other.selectors = b;
-  } else {
-    this.selectors = this.selectors.filter(predicate);
+      predicate,
+    )
+    this.selectors = a
+    this._other.selectors = b
+  }
+  else {
+    this.selectors = this.selectors.filter(predicate)
   }
 }
 
-const MEDIA_TYPES = new Set(['all', 'print', 'screen', 'speech']);
-const MEDIA_KEYWORDS = new Set(['and', 'not', ',']);
+const MEDIA_TYPES = new Set(['all', 'print', 'screen', 'speech'])
+const MEDIA_KEYWORDS = new Set(['and', 'not', ','])
 const MEDIA_FEATURES = new Set(
   [
     'width',
@@ -209,18 +214,20 @@ const MEDIA_FEATURES = new Set(
     'monochrome',
     'orientation',
     'resolution',
-    'scan'
-  ].flatMap((feature) => [feature, `min-${feature}`, `max-${feature}`])
-);
+    'scan',
+  ].flatMap(feature => [feature, `min-${feature}`, `max-${feature}`]),
+)
 
 function validateMediaType(node) {
-  const { type: nodeType, value: nodeValue } = node;
+  const { type: nodeType, value: nodeValue } = node
   if (nodeType === 'media-type') {
-    return MEDIA_TYPES.has(nodeValue);
-  } else if (nodeType === 'keyword') {
-    return MEDIA_KEYWORDS.has(nodeValue);
-  } else if (nodeType === 'media-feature') {
-    return MEDIA_FEATURES.has(nodeValue);
+    return MEDIA_TYPES.has(nodeValue)
+  }
+  else if (nodeType === 'keyword') {
+    return MEDIA_KEYWORDS.has(nodeValue)
+  }
+  else if (nodeType === 'media-feature') {
+    return MEDIA_FEATURES.has(nodeValue)
   }
 }
 
@@ -235,23 +242,23 @@ function validateMediaType(node) {
  */
 export function validateMediaQuery(query) {
   // The below is needed for consumption with webpack.
-  const mediaParserFn = 'default' in mediaParser ? mediaParser.default : mediaParser;
-  const mediaTree = mediaParserFn(query);
-  const nodeTypes = new Set(['media-type', 'keyword', 'media-feature']);
+  const mediaParserFn = 'default' in mediaParser ? mediaParser.default : mediaParser
+  const mediaTree = mediaParserFn(query)
+  const nodeTypes = new Set(['media-type', 'keyword', 'media-feature'])
 
-  const stack = [mediaTree];
+  const stack = [mediaTree]
 
   while (stack.length > 0) {
-    const node = stack.pop();
+    const node = stack.pop()
 
     if (nodeTypes.has(node.type) && !validateMediaType(node)) {
-      return false;
+      return false
     }
 
     if (node.nodes) {
-      stack.push(...node.nodes);
+      stack.push(...node.nodes)
     }
   }
 
-  return true;
+  return true
 }

@@ -14,64 +14,66 @@
  * the License.
  */
 
-import { selectAll, selectOne } from 'css-select';
-import { parseDocument, DomUtils } from 'htmlparser2';
-import { parse as selectorParser } from 'css-what';
-import { Element, Text } from 'domhandler';
-import render from 'dom-serializer';
+import { selectAll, selectOne } from 'css-select'
+import { parse as selectorParser } from 'css-what'
+import render from 'dom-serializer'
+import { Element, Text } from 'domhandler'
+import { DomUtils, parseDocument } from 'htmlparser2'
 
-let classCache = null;
-let idCache = null;
+let classCache = null
+let idCache = null
 
 function buildCache(container) {
-  classCache = new Set();
-  idCache = new Set();
-  const queue = [container];
+  classCache = new Set()
+  idCache = new Set()
+  const queue = [container]
 
   while (queue.length) {
-    const node = queue.shift();
+    const node = queue.shift()
 
     if (node.hasAttribute('class')) {
-      const classList = node.getAttribute('class').trim().split(' ');
+      const classList = node.getAttribute('class').trim().split(' ')
       classList.forEach((cls) => {
-        classCache.add(cls);
-      });
+        classCache.add(cls)
+      })
     }
 
     if (node.hasAttribute('id')) {
-      const id = node.getAttribute('id').trim();
-      idCache.add(id);
+      const id = node.getAttribute('id').trim()
+      idCache.add(id)
     }
 
-    queue.push(...node.children.filter((child) => child.type === 'tag'));
+    queue.push(...node.children.filter(child => child.type === 'tag'))
   }
 }
 
 /**
  * Parse HTML into a mutable, serializable DOM Document.
  * The DOM implementation is an htmlparser2 DOM enhanced with basic DOM mutation methods.
- * @param {String} html   HTML to parse into a Document instance
+ * @param {string} html   HTML to parse into a Document instance
  */
 export function createDocument(html) {
-  const document = /** @type {HTMLDocument} */ (parseDocument(html, {decodeEntities: false}));
+  const document = /** @type {HTMLDocument} */ (parseDocument(html, { decodeEntities: false }))
 
-  defineProperties(document, DocumentExtensions);
+  // eslint-disable-next-line no-use-before-define
+  defineProperties(document, DocumentExtensions)
 
   // Extend Element.prototype with DOM manipulation methods.
-  defineProperties(Element.prototype, ElementExtensions);
+  // eslint-disable-next-line no-use-before-define
+  defineProperties(Element.prototype, ElementExtensions)
 
   // Beasties container is the viewport to evaluate critical CSS
-  let beastiesContainer = document.querySelector('[data-beasties-container]');
+  let beastiesContainer = document.querySelector('[data-beasties-container]')
 
   if (!beastiesContainer) {
-    document.documentElement.setAttribute('data-beasties-container', '');
-    beastiesContainer = document.documentElement;
+    document.documentElement.setAttribute('data-beasties-container', '')
+    beastiesContainer = document.documentElement
   }
 
-  document.beastiesContainer = beastiesContainer;
-  buildCache(beastiesContainer);
+  document.beastiesContainer = beastiesContainer
+  buildCache(beastiesContainer)
 
-  return document;
+  return document
 }
 
 /**
@@ -79,7 +81,7 @@ export function createDocument(html) {
  * @param {HTMLDocument} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument(document) {
-  return render(document, { decodeEntities: false });
+  return render(document, { decodeEntities: false })
 }
 
 /** @typedef {treeAdapter.Document & typeof ElementExtensions} HTMLDocument */
@@ -93,8 +95,8 @@ const ElementExtensions = {
 
   nodeName: {
     get() {
-      return this.tagName.toUpperCase();
-    }
+      return this.tagName.toUpperCase()
+    },
   },
 
   id: reflectedProperty('id'),
@@ -102,72 +104,76 @@ const ElementExtensions = {
   className: reflectedProperty('class'),
 
   insertBefore(child, referenceNode) {
-    if (!referenceNode) return this.appendChild(child);
-    DomUtils.prepend(referenceNode, child);
-    return child;
+    if (!referenceNode)
+      return this.appendChild(child)
+    DomUtils.prepend(referenceNode, child)
+    return child
   },
 
   appendChild(child) {
-    DomUtils.appendChild(this, child);
-    return child;
+    DomUtils.appendChild(this, child)
+    return child
   },
 
   removeChild(child) {
-    DomUtils.removeElement(child);
+    DomUtils.removeElement(child)
   },
 
   remove() {
-    DomUtils.removeElement(this);
+    DomUtils.removeElement(this)
   },
 
   textContent: {
     get() {
-      return DomUtils.getText(this);
+      return DomUtils.getText(this)
     },
 
     set(text) {
-      this.children = [];
-      DomUtils.appendChild(this, new Text(text));
-    }
+      this.children = []
+      DomUtils.appendChild(this, new Text(text))
+    },
   },
 
   setAttribute(name, value) {
-    if (this.attribs == null) this.attribs = {};
-    if (value == null) value = '';
-    this.attribs[name] = value;
+    if (this.attribs == null)
+      this.attribs = {}
+    if (value == null)
+      value = ''
+    this.attribs[name] = value
   },
 
   removeAttribute(name) {
     if (this.attribs != null) {
-      delete this.attribs[name];
+      delete this.attribs[name]
     }
   },
 
   getAttribute(name) {
-    return this.attribs != null && this.attribs[name];
+    return this.attribs != null && this.attribs[name]
   },
 
   hasAttribute(name) {
-    return this.attribs != null && this.attribs[name] != null;
+    return this.attribs != null && this.attribs[name] != null
   },
 
   getAttributeNode(name) {
-    const value = this.getAttribute(name);
-    if (value != null) return { specified: true, value };
+    const value = this.getAttribute(name)
+    if (value != null)
+      return { specified: true, value }
   },
 
   exists(sel) {
-    return cachedQuerySelector(sel, this);
+    return cachedQuerySelector(sel, this)
   },
 
   querySelector(sel) {
-    return selectOne(sel, this);
+    return selectOne(sel, this)
   },
 
   querySelectorAll(sel) {
-    return selectAll(sel, this);
-  }
-};
+    return selectAll(sel, this)
+  },
+}
 
 /**
  * Methods and descriptors to mix into the global document instance
@@ -180,67 +186,67 @@ const DocumentExtensions = {
   // TODO: verify if these are needed for css-select
   nodeType: {
     get() {
-      return 9;
-    }
+      return 9
+    },
   },
 
   contentType: {
     get() {
-      return 'text/html';
-    }
+      return 'text/html'
+    },
   },
 
   nodeName: {
     get() {
-      return '#document';
-    }
+      return '#document'
+    },
   },
 
   documentElement: {
     get() {
       // Find the first <html> element within the document
       return this.children.find(
-        (child) => String(child.tagName).toLowerCase() === 'html'
-      );
-    }
+        child => String(child.tagName).toLowerCase() === 'html',
+      )
+    },
   },
 
   head: {
     get() {
-      return this.querySelector('head');
-    }
+      return this.querySelector('head')
+    },
   },
 
   body: {
     get() {
-      return this.querySelector('body');
-    }
+      return this.querySelector('body')
+    },
   },
 
   createElement(name) {
-    return new Element(name);
+    return new Element(name)
   },
 
   createTextNode(text) {
     // there is no dedicated createTextNode equivalent exposed in htmlparser2's DOM
-    return new Text(text);
+    return new Text(text)
   },
 
   exists(sel) {
-    return cachedQuerySelector(sel, this);
+    return cachedQuerySelector(sel, this)
   },
 
   querySelector(sel) {
-    return selectOne(sel, this);
+    return selectOne(sel, this)
   },
 
   querySelectorAll(sel) {
     if (sel === ':root') {
-      return this;
+      return this
     }
-    return selectAll(sel, this);
-  }
-};
+    return selectAll(sel, this)
+  },
+}
 
 /**
  * Essentially `Object.defineProperties()`, except function values are assigned as value descriptors for convenience.
@@ -248,12 +254,12 @@ const DocumentExtensions = {
  */
 function defineProperties(obj, properties) {
   for (const i in properties) {
-    const value = properties[i];
+    const value = properties[i]
     Object.defineProperty(
       obj,
       i,
-      typeof value === 'function' ? { value } : value
-    );
+      typeof value === 'function' ? { value } : value,
+    )
   }
 }
 
@@ -264,27 +270,27 @@ function defineProperties(obj, properties) {
 function reflectedProperty(attributeName) {
   return {
     get() {
-      return this.getAttribute(attributeName);
+      return this.getAttribute(attributeName)
     },
     set(value) {
-      this.setAttribute(attributeName, value);
-    }
-  };
+      this.setAttribute(attributeName, value)
+    },
+  }
 }
 
 function cachedQuerySelector(sel, node) {
-  const selectorTokens = selectorParser(sel);
+  const selectorTokens = selectorParser(sel)
   for (const tokens of selectorTokens) {
     // Check if the selector is a class selector
     if (tokens.length === 1) {
-      const token = tokens[0];
+      const token = tokens[0]
       if (token.type === 'attribute' && token.name === 'class') {
-        return classCache.has(token.value);
+        return classCache.has(token.value)
       }
       if (token.type === 'attribute' && token.name === 'id') {
-        return idCache.has(token.value);
+        return idCache.has(token.value)
       }
     }
   }
-  return !!selectOne(sel, node);
+  return !!selectOne(sel, node)
 }

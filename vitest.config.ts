@@ -4,8 +4,8 @@ export default defineConfig({
   test: {
     coverage: {
       include: [
-        'packages/*/src/**/*.[tj]s'
-      ]
-    }
-  }
+        'packages/*/src/**/*.[tj]s',
+      ],
+    },
+  },
 })

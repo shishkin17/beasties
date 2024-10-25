@@ -1,32 +1,32 @@
+import * as cheerio from 'cheerio'
 import { describe, expect, it } from 'vitest'
-import Beasties from '../src/index';
-import * as cheerio from 'cheerio';
+import Beasties from '../src/index'
 
-function hasEvilOnload(html) {
-  const $ = cheerio.load(html, { scriptingEnabled: true });
-  return $('[onload]').attr('onload').includes(`''-alert(1)-''`);
-}
+// function hasEvilOnload(html) {
+//   const $ = cheerio.load(html, { scriptingEnabled: true })
+//   return $('[onload]').attr('onload').includes(`''-alert(1)-''`)
+// }
 
 function hasEvilScript(html) {
-  const $ = cheerio.load(html, { scriptingEnabled: true });
-  const scripts = Array.from($('script'));
-  return scripts.some((s) => s.textContent.trim() === 'alert(1)');
+  const $ = cheerio.load(html, { scriptingEnabled: true })
+  const scripts = Array.from($('script'))
+  return scripts.some(s => s.textContent.trim() === 'alert(1)')
 }
 
-describe('Beasties', () => {
+describe('beasties', () => {
   it('should not decode entities', async () => {
-    const beasties = new Beasties({});
+    const beasties = new Beasties({})
     const html = await beasties.process(`
             <html>
                 <body>
                     &lt;script&gt;alert(1)&lt;/script&gt;
-        `);
-    expect(hasEvilScript(html)).toBeFalsy();
-  });
+        `)
+    expect(hasEvilScript(html)).toBeFalsy()
+  })
   it('should not create a new script tag from embedding linked stylesheets', async () => {
-    const beasties = new Beasties({});
+    const beasties = new Beasties({})
     beasties.readFile = () =>
-      `* { background: url('</style><script>alert(1)</script>') }`;
+      `* { background: url('</style><script>alert(1)</script>') }`
     const html = await beasties.process(`
             <html>
                 <head>
@@ -34,15 +34,15 @@ describe('Beasties', () => {
                 </head>
                 <body>
                 </body>
-        `);
-    expect(hasEvilScript(html)).toBeFalsy();
-  });
+        `)
+    expect(hasEvilScript(html)).toBeFalsy()
+  })
   it('should not create a new script tag from embedding additional stylesheets', async () => {
     const beasties = new Beasties({
-      additionalStylesheets: ['/style.css']
-    });
+      additionalStylesheets: ['/style.css'],
+    })
     beasties.readFile = () =>
-      `* { background: url('</style><script>alert(1)</script>') }`;
+      `* { background: url('</style><script>alert(1)</script>') }`
     const html = await beasties.process(`
             <html>
                 <head>
@@ -50,13 +50,13 @@ describe('Beasties', () => {
                 </head>
                 <body>
                 </body>
-        `);
-    expect(hasEvilScript(html)).toBeFalsy();
-  });
+        `)
+    expect(hasEvilScript(html)).toBeFalsy()
+  })
 
   it('should not create a new script tag by ending </script> from href', async () => {
-    const beasties = new Beasties({ preload: 'js' });
-    beasties.readFile = () => `* { background: red }`;
+    const beasties = new Beasties({ preload: 'js' })
+    beasties.readFile = () => `* { background: red }`
     const html = await beasties.process(`
         <html>
             <head>
@@ -64,7 +64,7 @@ describe('Beasties', () => {
             </head>
             <body>
             </body>
-    `);
-    expect(hasEvilScript(html)).toBeFalsy();
-  });
-});
+    `)
+    expect(hasEvilScript(html)).toBeFalsy()
+  })
+})

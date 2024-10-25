@@ -36,11 +36,11 @@ yarn add -D beasties
 ## Simple Example
 
 ```js
-import Beasties from 'beasties';
+import Beasties from 'beasties'
 
 const beasties = new Beasties({
   // optional configuration (see below)
-});
+})
 
 const html = `
   <style>
@@ -48,11 +48,11 @@ const html = `
     .blue { color: blue }
   </style>
   <div class="blue">I'm Blue</div>
-`;
+`
 
-const inlined = await beasties.process(html);
+const inlined = await beasties.process(html)
 
-console.log(inlined);
+console.log(inlined)
 // "<style>.blue{color:blue}</style><div class=\"blue\">I'm Blue</div>"
 ```
 

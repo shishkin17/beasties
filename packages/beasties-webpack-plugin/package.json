@@ -2,19 +2,6 @@
   "name": "beasties-webpack-plugin",
   "version": "0.0.26",
   "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
-  "main": "dist/beasties-webpack-plugin.js",
-  "module": "dist/beasties-webpack-plugin.mjs",
-  "source": "src/index.js",
-  "exports": {
-    "import": "./dist/beasties-webpack-plugin.mjs",
-    "require": "./dist/beasties-webpack-plugin.js",
-    "default": "./dist/beasties-webpack-plugin.mjs"
-  },
-  "files": [
-    "src",
-    "dist"
-  ],
-  "license": "Apache-2.0",
   "author": "The Chromium Authors",
   "contributors": [
     {
@@ -31,6 +18,12 @@
       "url": "https://roe.dev"
     }
   ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielroe/beasties",
+    "directory": "packages/beasties-webpack-plugin"
+  },
   "keywords": [
     "critical css",
     "inline css",
@@ -39,15 +32,36 @@
     "webpack plugin",
     "performance"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/danielroe/beasties",
-    "directory": "packages/beasties-webpack-plugin"
+  "exports": {
+    "import": "./dist/beasties-webpack-plugin.mjs",
+    "require": "./dist/beasties-webpack-plugin.js",
+    "default": "./dist/beasties-webpack-plugin.mjs"
   },
+  "main": "dist/beasties-webpack-plugin.js",
+  "module": "dist/beasties-webpack-plugin.mjs",
+  "source": "src/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "microbundle --target node --no-sourcemap -f cjs,esm",
     "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
     "prepare": "npm run -s build"
+  },
+  "peerDependencies": {
+    "html-webpack-plugin": "^4.5.2"
+  },
+  "peerDependenciesMeta": {
+    "html-webpack-plugin": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "beasties": "^0.0.16",
+    "minimatch": "^3.0.8",
+    "webpack-log": "^3.0.2",
+    "webpack-sources": "^1.4.3"
   },
   "devDependencies": {
     "css-loader": "4.3.0",
@@ -57,19 +71,5 @@
     "microbundle": "0.15.1",
     "mini-css-extract-plugin": "0.10.1",
     "webpack": "4.47.0"
-  },
-  "dependencies": {
-    "beasties": "^0.0.16",
-    "minimatch": "^3.0.8",
-    "webpack-log": "^3.0.2",
-    "webpack-sources": "^1.4.3"
-  },
-  "peerDependencies": {
-    "html-webpack-plugin": "^4.5.2"
-  },
-  "peerDependenciesMeta": {
-    "html-webpack-plugin": {
-      "optional": true
-    }
   }
 }

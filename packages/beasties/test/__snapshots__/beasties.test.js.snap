@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Beasties > Basic Usage 1`] = `
+exports[`beasties > basic Usage 1`] = `
 "<html data-beasties-container>
   <head>
     <style>h1{color:blue}p{color:purple}</style><link rel="preload" href="/style.css" as="style">
@@ -12,7 +12,7 @@ exports[`Beasties > Basic Usage 1`] = `
 </html>"
 `;
 
-exports[`Beasties > Prevent injection via media attr 1`] = `
+exports[`beasties > prevent injection via media attr 1`] = `
 "<html>
 <link>
 <title>Testing</title>
@@ -43,7 +43,7 @@ exports[`Beasties > Prevent injection via media attr 1`] = `
 "
 `;
 
-exports[`Beasties > Run on HTML file 1`] = `
+exports[`beasties > run on HTML file 1`] = `
 "<html>
   <head>
     <title>Testing</title>
@@ -69,7 +69,31 @@ exports[`Beasties > Run on HTML file 1`] = `
 "
 `;
 
-exports[`Beasties > Skip invalid path 1`] = `
+exports[`beasties > should keep existing link tag attributes 1`] = `
+"<html data-beasties-container>
+  <head>
+    <title>$title</title>
+    <style>h1{color:blue}</style><link rel="preload" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" as="style">
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  <link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+"></body>
+</html>"
+`;
+
+exports[`beasties > should keep existing link tag attributes in the noscript link 1`] = `
+"<html data-beasties-container>
+  <head>
+    <title>$title</title>
+    <style>h1{color:blue}</style><link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+"></noscript>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+</html>"
+`;
+
+exports[`beasties > skip invalid path 1`] = `
 "<html>
 <link>
 <title>Testing</title>
@@ -98,28 +122,4 @@ exports[`Beasties > Skip invalid path 1`] = `
 
 </html>
 "
-`;
-
-exports[`Beasties > should keep existing link tag attributes 1`] = `
-"<html data-beasties-container>
-  <head>
-    <title>$title</title>
-    <style>h1{color:blue}</style><link rel="preload" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" as="style">
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-  <link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+"></body>
-</html>"
-`;
-
-exports[`Beasties > should keep existing link tag attributes in the noscript link 1`] = `
-"<html data-beasties-container>
-  <head>
-    <title>$title</title>
-    <style>h1{color:blue}</style><link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+"></noscript>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-  </body>
-</html>"
 `;

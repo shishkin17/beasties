@@ -14,80 +14,84 @@
  * the License.
  */
 
-import { promisify } from 'util';
-import fs from 'fs';
-import path from 'path';
-import webpack from 'webpack';
-import { JSDOM } from 'jsdom';
-import BeastiesWebpackPlugin from '../src/index.js';
+import fs from 'node:fs'
+import path from 'node:path'
+import { promisify } from 'node:util'
+import { JSDOM } from 'jsdom'
+import webpack from 'webpack'
+import BeastiesWebpackPlugin from '../src/index.js'
 
-const { window } = new JSDOM();
+const { window } = new JSDOM()
 
 // parse a string into a JSDOM Document
-export const parseDom = (html) =>
-  new window.DOMParser().parseFromString(html, 'text/html');
+export function parseDom(html) {
+  return new window.DOMParser().parseFromString(html, 'text/html')
+}
 
 // returns a promise resolving to the contents of a file
-export const readFile = (file) =>
-  promisify(fs.readFile)(path.resolve(__dirname, file), 'utf8');
+export function readFile(file) {
+  return promisify(fs.readFile)(path.resolve(__dirname, file), 'utf8')
+}
 
 // invoke webpack on a given entry module, optionally mutating the default configuration
 export function compile(entry, configDecorator) {
   return new Promise((resolve, reject) => {
-    const context = path.dirname(path.resolve(__dirname, entry));
-    entry = path.basename(entry);
+    const context = path.dirname(path.resolve(__dirname, entry))
+    entry = path.basename(entry)
     let config = {
       context,
       entry: path.resolve(context, entry),
       output: {
         path: path.resolve(__dirname, path.resolve(context, 'dist')),
         filename: 'bundle.js',
-        chunkFilename: '[name].chunk.js'
+        chunkFilename: '[name].chunk.js',
       },
       resolveLoader: {
-        modules: [path.resolve(__dirname, '../node_modules')]
+        modules: [path.resolve(__dirname, '../node_modules')],
       },
       // Needed to resolve `Error: error:0308010C:digital envelope routines::unsupported` in webpack 4.
       // Should remove when we drop support for webpack 4.
       optimization: {
-        minimizer: []
+        minimizer: [],
       },
       module: {
-        rules: []
+        rules: [],
       },
-      plugins: []
-    };
+      plugins: [],
+    }
     if (configDecorator) {
-      config = configDecorator(config) || config;
+      config = configDecorator(config) || config
     }
 
     webpack(config, (err, stats) => {
-      if (err) return reject(err);
-      const info = stats.toJson();
-      if (stats.hasErrors()) return reject(info.errors.join('\n'));
-      resolve(info);
-    });
-  });
+      if (err)
+        return reject(err)
+      const info = stats.toJson()
+      if (stats.hasErrors())
+        return reject(info.errors.join('\n'))
+      resolve(info)
+    })
+  })
 }
 
 // invoke webpack via compile(), applying Beasties to inline CSS and injecting `html` and `document` properties into the webpack build info.
 export async function compileToHtml(
   fixture,
   configDecorator,
-  beastiesOptions = {}
+  beastiesOptions = {},
 ) {
   const info = await compile(`fixtures/${fixture}/index.js`, (config) => {
-    config = configDecorator(config) || config;
+    config = configDecorator(config) || config
     config.plugins.push(
       new BeastiesWebpackPlugin({
         pruneSource: true,
         compress: false,
         logLevel: 'silent',
-        ...beastiesOptions
-      })
-    );
-  });
-  info.html = await readFile(`fixtures/${fixture}/dist/index.html`);
-  info.document = parseDom(info.html);
-  return info;
+        ...beastiesOptions,
+      }),
+    )
+  })
+  info.html = await readFile(`fixtures/${fixture}/dist/index.html`)
+  info.document = parseDom(info.html)
+  return info
 }

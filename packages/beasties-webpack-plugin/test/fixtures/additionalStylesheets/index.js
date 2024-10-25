@@ -1,5 +1,5 @@
-import './style.css';
+import './style.css'
 
-document.body.appendChild(document.createTextNode('this counts as SSR'));
+document.body.appendChild(document.createTextNode('this counts as SSR'))
 
-import('./chunk.js').then();
+import('./chunk.js').then()
