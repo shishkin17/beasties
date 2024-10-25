@@ -41,9 +41,6 @@ importers:
 
   packages/beasties:
     dependencies:
-      chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
       css-select:
         specifier: ^5.1.0
         version: 5.1.0
@@ -56,6 +53,9 @@ importers:
       htmlparser2:
         specifier: ^8.0.2
         version: 8.0.2
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
       postcss:
         specifier: ^8.4.47
         version: 8.4.47

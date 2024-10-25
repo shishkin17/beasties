@@ -1,5 +1,5 @@
 import path from 'node:path'
-import chalk from 'chalk'
+import pc from 'picocolors'
 
 const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'silent']
 
@@ -15,16 +15,16 @@ export const defaultLogger = {
   },
 
   warn(msg) {
-    console.warn(chalk.yellow(msg))
+    console.warn(pc.yellow(msg))
   },
 
   error(msg) {
-    console.error(chalk.bold.red(msg))
+    console.error(pc.bold(pc.red(msg)))
   },
 
   info(msg) {
     // eslint-disable-next-line no-console
-    console.info(chalk.bold.blue(msg))
+    console.info(pc.bold(pc.blue(msg)))
   },
 
   silent() {},
