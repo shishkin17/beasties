@@ -31,10 +31,10 @@
     ]
   },
   "scripts": {
-    "build": "yarn workspaces run build",
-    "build:main": "yarn workspace beasties run build",
-    "build:webpack": "yarn workspace beasties-webpack-plugin run build",
-    "docs": "yarn workspaces run docs",
+    "build": "pnpm -r build",
+    "build:main": "pnpm --filter beasties run build",
+    "build:webpack": "pnpm --filter beasties-webpack-plugin run build",
+    "docs": "pnpm -r docs",
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "vitest --coverage"
   },
