@@ -14,6 +14,8 @@
  * the License.
  */
 
+import { describe, test, expect, it, vi } from 'vitest'
+
 import Beasties from '../src/index';
 import fs from 'fs';
 import path from 'path';
@@ -192,7 +194,7 @@ describe('Beasties', () => {
   });
 
   test('Skip invalid path', async () => {
-    const consoleSpy = jest.spyOn(console, 'warn');
+    const consoleSpy = vi.spyOn(console, 'warn');
 
     const beasties = new Beasties({
       reduceInlineStyles: false,
@@ -213,7 +215,7 @@ describe('Beasties', () => {
 
   it('should not load stylesheets outside of the base path', async () => {
     const beasties = new Beasties({ path: '/var/www' });
-    jest.spyOn(beasties, 'readFile');
+    vi.spyOn(beasties, 'readFile');
     await beasties.process(`
         <html>
             <head>

@@ -14,6 +14,7 @@
  * the License.
  */
 
+import { describe, test, expect, it, beforeAll } from 'vitest'
 import { compile, compileToHtml, readFile } from './_helpers.js';
 
 function configure(config) {

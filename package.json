@@ -36,32 +36,10 @@
     "build:webpack": "yarn workspace beasties-webpack-plugin run build",
     "docs": "yarn workspaces run docs",
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "test": "jest --coverage"
+    "test": "vitest --coverage"
   },
   "engines": {
     "node": ">=18.13.0"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "coverageReporters": [
-      "text"
-    ],
-    "moduleNameMapper": {
-      "^beasties$": "<rootDir>/packages/beasties/src/index.js",
-      "#(.*)": "<rootDir>/node_modules/$1"
-    },
-    "collectCoverageFrom": [
-      "packages/*/src/**/*.js"
-    ],
-    "modulePaths": [
-      "<rootDir>/packages/beasties-webpack-plugin/node_modules",
-      "<rootDir>/packages/beasties/node_modules"
-    ],
-    "watchPathIgnorePatterns": [
-      "node_modules",
-      "dist"
-    ],
-    "transformIgnorePatterns": []
   },
   "prettier": {
     "singleQuote": true,
@@ -70,7 +48,6 @@
   "eslintConfig": {
     "extends": [
       "standard",
-      "plugin:jest/recommended",
       "prettier"
     ],
     "globals": {
@@ -86,22 +63,21 @@
   },
   "devDependencies": {
     "@babel/preset-env": "7.26.0",
-    "@types/jest": "26.0.24",
+    "@vitest/coverage-v8": "^2.1.3",
     "babel-core": "6.26.3",
-    "babel-jest": "26.6.3",
     "cheerio": "1.0.0-rc.12",
+    "css-what": "^6.1.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "6.15.0",
     "eslint-config-standard": "14.1.1",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-jest": "23.20.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "4.3.1",
     "eslint-plugin-standard": "4.1.0",
-    "jest": "26.6.3",
     "jsdom": "16.7.0",
     "microbundle": "0.12.4",
-    "prettier": "2.8.8"
+    "prettier": "2.8.8",
+    "vitest": "^2.1.3"
   },
   "resolutions": {
     "beasties": "workspace:*"

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`External CSS should match snapshot 1`] = `
+exports[`External CSS > should match snapshot 1`] = `
 "<!DOCTYPE html>
 <html data-beasties-container>
   <head>
@@ -53,25 +53,25 @@ footer {
   border-top: thin dotted;
 }
 
-</style><link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
+</style><link href="main.css" rel="preload" as="style"></head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class="navbar">
       <li>
-        <a href=\\"index.html\\">Home page</a>
+        <a href="index.html">Home page</a>
       </li>
       <li>
-        <a href=\\"musings.html\\">Musings</a>
+        <a href="musings.html">Musings</a>
       </li>
     </ul>
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script><link href=\\"main.css\\" rel=\\"stylesheet\\"></body>
+  <script src="bundle.js"></script><link href="main.css" rel="stylesheet"></body>
 </html>
 "
 `;
 
-exports[`External CSS should prune external sheet 1`] = `
+exports[`External CSS > should prune external sheet 1`] = `
 "
 .extra-style {
   font-size: 200%;
@@ -80,7 +80,7 @@ exports[`External CSS should prune external sheet 1`] = `
 "
 `;
 
-exports[`Inline <style> pruning should remove entire unused stylesheets 1`] = `
+exports[`Inline <style> pruning > should remove entire unused stylesheets 1`] = `
 "
       h1 {
         color: green;
@@ -88,7 +88,7 @@ exports[`Inline <style> pruning should remove entire unused stylesheets 1`] = `
     "
 `;
 
-exports[`Inline <style> pruning should remove unused rules 1`] = `
+exports[`Inline <style> pruning > should remove unused rules 1`] = `
 "<!DOCTYPE html>
 <html data-beasties-container>
   <head>
@@ -96,7 +96,7 @@ exports[`Inline <style> pruning should remove unused rules 1`] = `
     <style>
       body {
         padding-left: 11em;
-        font-family: \\"Times New Roman\\", times, serif;
+        font-family: "Times New Roman", times, serif;
         color: purple;
         background-color: #d8da3d;
       }
@@ -143,29 +143,29 @@ exports[`Inline <style> pruning should remove unused rules 1`] = `
         border-top: thin dotted;
       }
 
-      .clazz\\\\:colon {
+      .clazz\\:colon {
         color: green;
       }
     </style>
   </head>
   <body>
-    <ul class=\\"navbar clazz:colon\\">
+    <ul class="navbar clazz:colon">
       <li>
-        <a href=\\"index.html\\">Home page</a>
+        <a href="index.html">Home page</a>
       </li>
       <li>
-        <a href=\\"musings.html\\">Musings</a>
+        <a href="musings.html">Musings</a>
       </li>
     </ul>
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script></body>
+  <script src="bundle.js"></script></body>
 </html>
 "
 `;
 
-exports[`options { additionalStylesheets:["*.css"] } should match snapshot 1`] = `
+exports[`options > { additionalStylesheets:["*.css"] } > should match snapshot 1`] = `
 "<!DOCTYPE html>
 <html data-beasties-container>
   <head>
@@ -182,25 +182,25 @@ html {
   font-size: 200%;
 }
 
-</style><link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
+</style><link href="main.css" rel="preload" as="style"></head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class="navbar">
       <li>
-        <a href=\\"index.html\\">Home page</a>
+        <a href="index.html">Home page</a>
       </li>
       <li>
-        <a href=\\"musings.html\\">Musings</a>
+        <a href="musings.html">Musings</a>
       </li>
     </ul>
-    <h1 class=\\"additional-style\\">My first styled page</h1>
+    <h1 class="additional-style">My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script><link href=\\"main.css\\" rel=\\"stylesheet\\"></body>
+  <script src="bundle.js"></script><link href="main.css" rel="stylesheet"></body>
 </html>
 "
 `;
 
-exports[`options { async:true } should match snapshot 1`] = `
+exports[`options > { async:true } > should match snapshot 1`] = `
 "<!DOCTYPE html>
 <html data-beasties-container>
   <head>
@@ -253,25 +253,25 @@ footer {
   border-top: thin dotted;
 }
 
-</style><link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
+</style><link href="main.css" rel="preload" as="style"></head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class="navbar">
       <li>
-        <a href=\\"index.html\\">Home page</a>
+        <a href="index.html">Home page</a>
       </li>
       <li>
-        <a href=\\"musings.html\\">Musings</a>
+        <a href="musings.html">Musings</a>
       </li>
     </ul>
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script><link href=\\"main.css\\" rel=\\"stylesheet\\"></body>
+  <script src="bundle.js"></script><link href="main.css" rel="stylesheet"></body>
 </html>
 "
 `;
 
-exports[`publicPath should match snapshot 1`] = `
+exports[`publicPath > should match snapshot 1`] = `
 "<!DOCTYPE html>
 <html data-beasties-container>
   <head>
@@ -324,25 +324,25 @@ footer {
   border-top: thin dotted;
 }
 
-</style><link href=\\"/_public/main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
+</style><link href="/_public/main.css" rel="preload" as="style"></head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class="navbar">
       <li>
-        <a href=\\"index.html\\">Home page</a>
+        <a href="index.html">Home page</a>
       </li>
       <li>
-        <a href=\\"musings.html\\">Musings</a>
+        <a href="musings.html">Musings</a>
       </li>
     </ul>
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"/_public/bundle.js\\"></script><link href=\\"/_public/main.css\\" rel=\\"stylesheet\\"></body>
+  <script src="/_public/bundle.js"></script><link href="/_public/main.css" rel="stylesheet"></body>
 </html>
 "
 `;
 
-exports[`publicPath should prune external sheet 1`] = `
+exports[`publicPath > should prune external sheet 1`] = `
 "
 .extra-style {
   font-size: 200%;
@@ -359,7 +359,7 @@ exports[`webpack compilation 1`] = `
     <style>
       body {
         padding-left: 11em;
-        font-family: \\"Times New Roman\\", times, serif;
+        font-family: "Times New Roman", times, serif;
         color: purple;
         background-color: #d8da3d;
       }
@@ -412,24 +412,24 @@ exports[`webpack compilation 1`] = `
         visibility: hidden;
       }
 
-      .clazz\\\\:colon {
+      .clazz\\:colon {
         color: green;
       }
     </style>
   </head>
   <body>
-    <ul class=\\"navbar clazz:colon\\">
+    <ul class="navbar clazz:colon">
       <li>
-        <a href=\\"index.html\\">Home page</a>
+        <a href="index.html">Home page</a>
       </li>
       <li>
-        <a href=\\"musings.html\\">Musings</a>
+        <a href="musings.html">Musings</a>
       </li>
     </ul>
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script></body>
+  <script src="bundle.js"></script></body>
 </html>
 "
 `;

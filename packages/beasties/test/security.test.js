@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import Beasties from '../src/index';
 import * as cheerio from 'cheerio';
 
