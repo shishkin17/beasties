@@ -55,7 +55,7 @@
     "postcss-media-query-parser": "^0.2.3"
   },
   "devDependencies": {
-    "documentation": "^13.0.2",
-    "microbundle": "^0.12.3"
+    "documentation": "13.0.2",
+    "microbundle": "0.12.3"
   }
 }
