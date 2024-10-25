@@ -54,7 +54,7 @@
     "documentation": "13.2.5",
     "file-loader": "6.2.0",
     "html-webpack-plugin": "4.5.2",
-    "microbundle": "0.12.4",
+    "microbundle": "0.15.1",
     "mini-css-extract-plugin": "0.10.1",
     "webpack": "4.47.0"
   },

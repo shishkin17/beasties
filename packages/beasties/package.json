@@ -6,11 +6,14 @@
   "module": "dist/beasties.mjs",
   "source": "src/index.js",
   "exports": {
-    "import": "./dist/beasties.mjs",
-    "require": "./dist/beasties.js",
-    "default": "./dist/beasties.mjs"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/beasties.mjs",
+      "require": "./dist/beasties.js",
+      "default": "./dist/beasties.mjs"
+    }
   },
-  "typings": "src/index.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
     "src",
     "dist"
@@ -41,7 +44,7 @@
     "directory": "packages/beasties"
   },
   "scripts": {
-    "build": "microbundle --target node --no-sourcemap -f cjs,esm",
+    "build": "microbundle --target node --no-sourcemap -f cjs,esm && cp src/index.d.ts dist/index.d.ts",
     "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
     "prepare": "npm run -s build"
   },
@@ -56,6 +59,6 @@
   },
   "devDependencies": {
     "documentation": "13.2.5",
-    "microbundle": "0.12.4"
+    "microbundle": "0.15.1"
   }
 }
