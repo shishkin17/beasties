@@ -87,26 +87,26 @@
     }
   },
   "devDependencies": {
-    "@babel/preset-env": "7.11.0",
-    "@types/jest": "26.0.23",
-    "babel-core": "6.26.0",
-    "babel-jest": "26.3.0",
+    "@babel/preset-env": "7.26.0",
+    "@types/jest": "26.0.24",
+    "babel-core": "6.26.3",
+    "babel-jest": "26.6.3",
     "cheerio": "1.0.0-rc.12",
-    "eslint": "7.6.0",
-    "eslint-config-prettier": "6.11.0",
+    "eslint": "7.32.0",
+    "eslint-config-prettier": "6.15.0",
     "eslint-config-standard": "14.1.1",
-    "eslint-plugin-import": "2.11.0",
+    "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jest": "23.20.0",
     "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "4.2.1",
-    "eslint-plugin-standard": "4.0.1",
-    "jest": "26.3.0",
-    "jsdom": "16.6.0",
-    "microbundle": "0.12.3",
-    "prettier": "2.3.0"
+    "eslint-plugin-promise": "4.3.1",
+    "eslint-plugin-standard": "4.1.0",
+    "jest": "26.6.3",
+    "jsdom": "16.7.0",
+    "microbundle": "0.12.4",
+    "prettier": "2.8.8"
   },
   "resolutions": {
     "beasties": "file:./packages/beasties"
   },
-  "packageManager": "yarn@1.22.4"
+  "packageManager": "yarn@1.22.22"
 }

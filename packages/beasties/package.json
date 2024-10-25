@@ -46,16 +46,16 @@
     "prepare": "npm run -s build"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "css-select": "^5.1.0",
     "dom-serializer": "^2.0.0",
-    "domhandler": "^5.0.2",
+    "domhandler": "^5.0.3",
     "htmlparser2": "^8.0.2",
-    "postcss": "^8.4.23",
+    "postcss": "^8.4.47",
     "postcss-media-query-parser": "^0.2.3"
   },
   "devDependencies": {
-    "documentation": "13.0.2",
-    "microbundle": "0.12.3"
+    "documentation": "13.2.5",
+    "microbundle": "0.12.4"
   }
 }

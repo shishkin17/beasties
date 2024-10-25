@@ -50,19 +50,19 @@
     "prepare": "npm run -s build"
   },
   "devDependencies": {
-    "css-loader": "4.2.1",
-    "documentation": "13.0.2",
-    "file-loader": "6.0.0",
+    "css-loader": "4.3.0",
+    "documentation": "13.2.5",
+    "file-loader": "6.2.0",
     "html-webpack-plugin": "4.5.2",
-    "microbundle": "0.12.3",
-    "mini-css-extract-plugin": "0.10.0",
+    "microbundle": "0.12.4",
+    "mini-css-extract-plugin": "0.10.1",
     "webpack": "4.47.0"
   },
   "dependencies": {
     "beasties": "^0.0.16",
-    "minimatch": "^3.0.4",
-    "webpack-log": "^3.0.1",
-    "webpack-sources": "^1.3.0"
+    "minimatch": "^3.0.8",
+    "webpack-log": "^3.0.2",
+    "webpack-sources": "^1.4.3"
   },
   "peerDependencies": {
     "html-webpack-plugin": "^4.5.2"
