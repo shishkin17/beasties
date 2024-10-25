@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: true
 
     steps:
       - uses: actions/checkout@v4
@@ -21,10 +23,14 @@ jobs:
           node-version: 18
           cache: pnpm
 
-      - name: install, build, test
-        run: |
-          pnpm i
-          pnpm build
-          pnpm test
-        env:
-          CI: true
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: 🛠 Build project
+        run: pnpm build
+
+      - name: 🧪 Test project
+        run: pnpm test
+
+      - name: 🟩 Coverage
+        uses: codecov/codecov-action@v4
