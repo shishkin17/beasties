@@ -1,6 +1,6 @@
 {
   "name": "beasties",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Inline critical CSS and lazy-load the rest.",
   "main": "dist/beasties.js",
   "module": "dist/beasties.mjs",

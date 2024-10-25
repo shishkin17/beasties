@@ -1,6 +1,6 @@
 {
   "name": "beasties-webpack-plugin",
-  "version": "3.0.2",
+  "version": "0.0.26",
   "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
   "main": "dist/beasties-webpack-plugin.js",
   "module": "dist/beasties-webpack-plugin.mjs",
