@@ -39,9 +39,7 @@
     "test": "jest --coverage"
   },
   "engines": {
-    "node": ">=18.13.0",
-    "yarn": ">=1.21.1 <2",
-    "npm": "Please use yarn instead of NPM to install dependencies"
+    "node": ">=18.13.0"
   },
   "jest": {
     "testEnvironment": "node",
@@ -106,7 +104,7 @@
     "prettier": "2.8.8"
   },
   "resolutions": {
-    "beasties": "file:./packages/beasties"
+    "beasties": "workspace:*"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "pnpm@9.12.2"
 }
