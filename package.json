@@ -30,7 +30,7 @@
     "postinstall": "simple-git-hooks && pnpm -r build:stub",
     "docs": "pnpm -r docs",
     "lint": "eslint .",
-    "release": "bumpp -r && pnpm publish",
+    "release": "bumpp -r && pnpm -r publish",
     "test": "vitest --coverage",
     "test:types": "tsc --noEmit"
   },
