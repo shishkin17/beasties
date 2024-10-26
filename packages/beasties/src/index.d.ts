@@ -19,7 +19,7 @@ export default class Beasties {
    * Create an instance of Beasties with custom options.
    * The `.process()` method can be called repeatedly to re-use this instance and its cache.
    */
-  constructor(options: Options)
+  constructor(options?: Options)
   /**
    * Process an HTML document to inline critical CSS from its stylesheets.
    * @param html String containing a full HTML document to be parsed.

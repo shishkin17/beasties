@@ -33,7 +33,7 @@ export default class Beasties {
   // TODO: remove (undocumented) support
   urlFilter: (url: string) => boolean
 
-  constructor(options: Options) {
+  constructor(options: Options = {}) {
     this.options = Object.assign({
       logLevel: 'info',
       path: '',
@@ -42,7 +42,7 @@ export default class Beasties {
       pruneSource: false,
       additionalStylesheets: [],
       allowRules: [],
-    }, options || {})
+    }, options)
 
     // @ts-expect-error TODO: remove support
     this.urlFilter = this.options.filter
