@@ -29,7 +29,7 @@
     "build:webpack": "pnpm --filter beasties-webpack-plugin run build",
     "docs": "pnpm -r docs",
     "lint": "eslint .",
-    "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && pnpm publish",
     "test": "vitest --coverage",
     "test:types": "tsc --noEmit"
   },
