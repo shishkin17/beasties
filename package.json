@@ -31,7 +31,7 @@
     "lint": "eslint .",
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "vitest --coverage",
-    "test:types": "vue-tsc --noEmit"
+    "test:types": "tsc --noEmit"
   },
   "devDependencies": {
     "@antfu/eslint-config": "3.8.0",
