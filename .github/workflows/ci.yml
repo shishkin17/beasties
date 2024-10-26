@@ -43,6 +43,9 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install
 
+      - name: 💪 Test types
+        run: pnpm test:types
+
       - name: 🛠 Build project
         run: pnpm build
 

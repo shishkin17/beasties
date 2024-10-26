@@ -7,10 +7,10 @@ import Beasties from '../src/index'
 //   return $('[onload]').attr('onload').includes(`''-alert(1)-''`)
 // }
 
-function hasEvilScript(html) {
+function hasEvilScript(html: string) {
   const $ = cheerio.load(html, { scriptingEnabled: true })
   const scripts = Array.from($('script'))
-  return scripts.some(s => s.textContent.trim() === 'alert(1)')
+  return scripts.some((s) => (s as unknown as HTMLScriptElement).textContent?.trim() === 'alert(1)')
 }
 
 describe('beasties', () => {
@@ -25,8 +25,7 @@ describe('beasties', () => {
   })
   it('should not create a new script tag from embedding linked stylesheets', async () => {
     const beasties = new Beasties({})
-    beasties.readFile = () =>
-      `* { background: url('</style><script>alert(1)</script>') }`
+    beasties.readFile = () => `* { background: url('</style><script>alert(1)</script>') }`
     const html = await beasties.process(`
             <html>
                 <head>
@@ -41,8 +40,7 @@ describe('beasties', () => {
     const beasties = new Beasties({
       additionalStylesheets: ['/style.css'],
     })
-    beasties.readFile = () =>
-      `* { background: url('</style><script>alert(1)</script>') }`
+    beasties.readFile = () => `* { background: url('</style><script>alert(1)</script>') }`
     const html = await beasties.process(`
             <html>
                 <head>

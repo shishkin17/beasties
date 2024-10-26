@@ -18,12 +18,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { describe, expect, it, vi } from 'vitest'
+
 import Beasties from '../src/index'
 
-function trim(s) {
-  return s[0]
+function trim(s: TemplateStringsArray) {
+  return s[0]!
     .trim()
-    .replace(new RegExp(`^${s[0].match(/^( {2}|\t)+/m)[0]}`, 'gm'), '')
+    .replace(new RegExp(`^${s[0]!.match(/^( {2}|\t)+/m)![0]}`, 'gm'), '')
 }
 
 describe('beasties', () => {
@@ -32,7 +33,7 @@ describe('beasties', () => {
       reduceInlineStyles: false,
       path: '/',
     })
-    const assets = {
+    const assets: Record<string, string> = {
       '/style.css': trim`
         h1 { color: blue; }
         h2.unused { color: red; }
@@ -40,7 +41,7 @@ describe('beasties', () => {
         p.unused { color: orange; }
       `,
     }
-    beasties.readFile = filename => assets[filename]
+    beasties.readFile = filename => assets[filename]!
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -77,12 +78,12 @@ describe('beasties', () => {
       reduceInlineStyles: false,
       path: '/',
     })
-    const assets = {
+    const assets: Record<string, string> = {
       '/style.css': trim`
         h1 { color: blue; }
       `,
     }
-    beasties.readFile = filename => assets[filename]
+    beasties.readFile = filename => assets[filename]!
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -105,12 +106,12 @@ describe('beasties', () => {
       path: '/',
       preload: 'media',
     })
-    const assets = {
+    const assets: Record<string, string> = {
       '/style.css': trim`
         h1 { color: blue; }
       `,
     }
-    beasties.readFile = filename => assets[filename]
+    beasties.readFile = filename => assets[filename]!
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -135,12 +136,12 @@ describe('beasties', () => {
       reduceInlineStyles: false,
       path: '/',
     })
-    const assets = {
+    const assets: Record<string, string> = {
       '/style.css': trim`
         h1 { color: blue; }
       `,
     }
-    beasties.readFile = filename => assets[filename]
+    beasties.readFile = filename => assets[filename]!
     const result = await beasties.process(trim`
       <html>
         <head>
@@ -164,7 +165,7 @@ describe('beasties', () => {
     const beasties = new Beasties({
       path: '/',
     })
-    const assets = {
+    const assets: Record<string, string> = {
       '/style.css': trim`
         h1 { color: blue; }
         h2.unused { color: red; }
@@ -172,7 +173,7 @@ describe('beasties', () => {
         p.unused { color: orange; }
       `,
     }
-    beasties.readFile = filename => assets[filename]
+    beasties.readFile = filename => assets[filename]!
     const result = await beasties.process(trim`
       <html>
         <body>
