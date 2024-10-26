@@ -17,7 +17,7 @@
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import Beasties from 'beasties'
-import minimatch from 'minimatch'
+import { minimatch } from 'minimatch'
 import log from 'webpack-log'
 import sources from 'webpack-sources'
 import { tap } from './util'
@@ -253,18 +253,11 @@ export default class BeastiesWebpackPlugin extends Beasties {
         delete this.compilation.assets[style.$$assetName]
         return true
       }
-      this.compilation.assets[style.$$assetName]
-        = new sources.LineToLineMappedSource(
-          sheetInverse,
-          style.$$assetName,
-          before,
-        )
+      this.compilation.assets[style.$$assetName] = new sources.SourceMapSource(sheetInverse, style.$$assetName, before)
     }
     else {
       this.logger.warn(
-        `pruneSource is enabled, but a style (${
-          name
-        }) has no corresponding Webpack asset.`,
+        `pruneSource is enabled, but a style (${name}) has no corresponding Webpack asset.`,
       )
     }
 

@@ -58,10 +58,10 @@
     }
   },
   "dependencies": {
-    "beasties": "^0.0.16",
-    "minimatch": "^3.0.8",
+    "beasties": "workspace:*",
+    "minimatch": "^10.0.1",
     "webpack-log": "^3.0.2",
-    "webpack-sources": "^1.4.3"
+    "webpack-sources": "^3.2.3"
   },
   "devDependencies": {
     "@types/jsdom": "21.1.7",
