@@ -1,0 +1,37 @@
+name: autofix.ci  # needed to securely identify the workflow
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: Dedupe dependencies
+        if: ${{ contains(github.head_ref, 'renovate') }}
+        run: pnpm dedupe
+
+      - name: 🔠 Lint project
+        run: pnpm lint --fix
+
+      - uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
+        with:
+          commit-message: 'chore: apply automated fixes'
