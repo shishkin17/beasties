@@ -45,7 +45,7 @@
   ],
   "scripts": {
     "build": "microbundle --target node --no-sourcemap -f cjs,esm && cp src/index.d.ts dist/index.d.ts",
-    "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
+    "docs": "documentation readme src -q --no-markdown-toc -a public -s Usage --sort-order alpha",
     "prepare": "npm run -s build"
   },
   "dependencies": {
