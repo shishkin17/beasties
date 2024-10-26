@@ -16,10 +16,13 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import { describe, expect, it, vi } from 'vitest'
 
 import Beasties from '../src/index'
+
+const fixtureDir = fileURLToPath(new URL('./src', import.meta.url))
 
 function trim(s: TemplateStringsArray) {
   return s[0]!
@@ -61,13 +64,10 @@ describe('beasties', () => {
   it('run on HTML file', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src'),
+      path: fixtureDir,
     })
 
-    const html = fs.readFileSync(
-      path.join(__dirname, 'src/index.html'),
-      'utf8',
-    )
+    const html = fs.readFileSync(path.join(fixtureDir, 'index.html'), 'utf-8')
 
     const result = await beasties.process(html)
     expect(result).toMatchSnapshot()
@@ -187,14 +187,11 @@ describe('beasties', () => {
   it('prevent injection via media attr', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src'),
+      path: fixtureDir,
       preload: 'media',
     })
 
-    const html = fs.readFileSync(
-      path.join(__dirname, 'src/media-validation.html'),
-      'utf8',
-    )
+    const html = fs.readFileSync(path.join(fixtureDir, 'media-validation.html'), 'utf-8')
 
     const result = await beasties.process(html)
     expect(result).toContain(
@@ -208,13 +205,10 @@ describe('beasties', () => {
 
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src'),
+      path: fixtureDir,
     })
 
-    const html = fs.readFileSync(
-      path.join(__dirname, 'src/subpath-validation.html'),
-      'utf8',
-    )
+    const html = fs.readFileSync(path.join(fixtureDir, 'subpath-validation.html'), 'utf-8')
 
     const result = await beasties.process(html)
     expect(consoleSpy).not.toHaveBeenCalledWith(

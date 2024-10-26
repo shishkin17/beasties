@@ -151,7 +151,7 @@ export default class Beasties {
         fs.readFile(filename, callback)
       }
       else {
-        readFile(filename, 'utf8', callback)
+        readFile(filename, 'utf-8', callback)
       }
     })
   }

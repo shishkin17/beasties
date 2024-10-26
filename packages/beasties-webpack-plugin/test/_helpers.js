@@ -16,10 +16,15 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
+
 import { JSDOM } from 'jsdom'
 import webpack from 'webpack'
+
 import BeastiesWebpackPlugin from '../src/index.js'
+
+const cwd = fileURLToPath(new URL('.', import.meta.url))
 
 const { window } = new JSDOM()
 
@@ -30,24 +35,24 @@ export function parseDom(html) {
 
 // returns a promise resolving to the contents of a file
 export function readFile(file) {
-  return promisify(fs.readFile)(path.resolve(__dirname, file), 'utf8')
+  return promisify(fs.readFile)(path.resolve(cwd, file), 'utf-8')
 }
 
 // invoke webpack on a given entry module, optionally mutating the default configuration
 export function compile(entry, configDecorator) {
   return new Promise((resolve, reject) => {
-    const context = path.dirname(path.resolve(__dirname, entry))
+    const context = path.dirname(path.resolve(cwd, entry))
     entry = path.basename(entry)
     let config = {
       context,
       entry: path.resolve(context, entry),
       output: {
-        path: path.resolve(__dirname, path.resolve(context, 'dist')),
+        path: path.resolve(cwd, path.resolve(context, 'dist')),
         filename: 'bundle.js',
         chunkFilename: '[name].chunk.js',
       },
       resolveLoader: {
-        modules: [path.resolve(__dirname, '../node_modules')],
+        modules: [path.resolve(cwd, '../node_modules')],
       },
       // Needed to resolve `Error: error:0308010C:digital envelope routines::unsupported` in webpack 4.
       // Should remove when we drop support for webpack 4.

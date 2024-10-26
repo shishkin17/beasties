@@ -1,8 +1,11 @@
 import fs from 'node:fs'
-import path from 'node:path'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import { bench, describe } from 'vitest'
 import Beasties from '../src/index'
+
+const fixtureDir = fileURLToPath(new URL('./src', import.meta.url))
 
 function trim(s: TemplateStringsArray) {
   return s[0]!
@@ -38,15 +41,12 @@ describe('beasties', () => {
     `)
   })
 
-  const basicHTML = fs.readFileSync(
-    path.join(__dirname, 'src/index.html'),
-    'utf8',
-  )
+  const basicHTML = fs.readFileSync(join(fixtureDir, 'index.html'), 'utf-8')
 
   bench('run on HTML file', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src'),
+      path: fixtureDir,
     })
 
     await beasties.process(basicHTML)
@@ -147,28 +147,22 @@ describe('beasties', () => {
     `)
   })
 
-  const mediaValidationHtml = fs.readFileSync(
-    path.join(__dirname, 'src/media-validation.html'),
-    'utf8',
-  )
+  const mediaValidationHtml = fs.readFileSync(join(fixtureDir, 'media-validation.html'), 'utf-8')
   bench('prevent injection via media attr', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src'),
+      path: fixtureDir,
       preload: 'media',
     })
 
     await beasties.process(mediaValidationHtml)
   })
 
-  const invalidPathHtml = fs.readFileSync(
-    path.join(__dirname, 'src/subpath-validation.html'),
-    'utf8',
-  )
+  const invalidPathHtml = fs.readFileSync(join(fixtureDir, 'subpath-validation.html'), 'utf-8')
   bench('skip invalid path', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
-      path: path.join(__dirname, 'src'),
+      path: fixtureDir,
     })
 
     await beasties.process(invalidPathHtml)
