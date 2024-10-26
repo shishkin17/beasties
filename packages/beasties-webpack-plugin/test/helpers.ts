@@ -42,7 +42,7 @@ export function readFile(file: string) {
 
 // invoke webpack on a given entry module, optionally mutating the default configuration
 export function compile(entry: string, configDecorator: (config: webpack.Configuration) => webpack.Configuration | void) {
-  return new Promise<webpack.Stats.ToJsonOutput>((resolve, reject) => {
+  return new Promise<webpack.StatsCompilation>((resolve, reject) => {
     const context = path.dirname(path.resolve(cwd, entry))
     entry = path.basename(entry)
     let config: webpack.Configuration = {
@@ -55,11 +55,6 @@ export function compile(entry: string, configDecorator: (config: webpack.Configu
       },
       resolveLoader: {
         modules: [path.resolve(cwd, '../node_modules')],
-      },
-      // Needed to resolve `Error: error:0308010C:digital envelope routines::unsupported` in webpack 4.
-      // Should remove when we drop support for webpack 4.
-      optimization: {
-        minimizer: [],
       },
       module: {
         rules: [],
@@ -74,8 +69,9 @@ export function compile(entry: string, configDecorator: (config: webpack.Configu
       if (err)
         return reject(err)
       const info = stats!.toJson()
-      if (stats?.hasErrors())
+      if (stats?.hasErrors()) {
         return reject(info.errors?.join('\n'))
+      }
       resolve(info)
     })
   })

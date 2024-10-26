@@ -5,7 +5,7 @@ exports[`external CSS > should match snapshot 1`] = `
 <html data-beasties-container>
   <head>
     <title>External CSS Demo</title>
-  <style>:root {
+  <script defer src="bundle.js"></script><style>:root {
   font-size: 10px;
 }
 html {
@@ -66,7 +66,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src="bundle.js"></script><link href="main.css" rel="stylesheet"></body>
+  <link href="main.css" rel="stylesheet"></body>
 </html>
 "
 `;
@@ -147,7 +147,7 @@ exports[`inline <style> pruning > should remove unused rules 1`] = `
         color: green;
       }
     </style>
-  </head>
+  <script defer src="bundle.js"></script></head>
   <body>
     <ul class="navbar clazz:colon">
       <li>
@@ -160,7 +160,7 @@ exports[`inline <style> pruning > should remove unused rules 1`] = `
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src="bundle.js"></script></body>
+  </body>
 </html>
 "
 `;
@@ -170,7 +170,7 @@ exports[`options > { additionalStylesheets:["*.css"] } > should match snapshot 1
 <html data-beasties-container>
   <head>
     <title>Additional Stylesheet CSS Demo</title>
-  <style>html {
+  <script defer src="bundle.js"></script><style>html {
   padding: 0px;
 }
 
@@ -195,7 +195,7 @@ html {
     <h1 class="additional-style">My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src="bundle.js"></script><link href="main.css" rel="stylesheet"></body>
+  <link href="main.css" rel="stylesheet"></body>
 </html>
 "
 `;
@@ -205,7 +205,7 @@ exports[`publicPath > should match snapshot 1`] = `
 <html data-beasties-container>
   <head>
     <title>External CSS Demo</title>
-  <style>:root {
+  <script defer src="/_public/bundle.js"></script><style>:root {
   font-size: 10px;
 }
 html {
@@ -266,7 +266,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src="/_public/bundle.js"></script><link href="/_public/main.css" rel="stylesheet"></body>
+  <link href="/_public/main.css" rel="stylesheet"></body>
 </html>
 "
 `;
@@ -345,7 +345,7 @@ exports[`webpack compilation 1`] = `
         color: green;
       }
     </style>
-  </head>
+  <script defer src="bundle.js"></script></head>
   <body>
     <ul class="navbar clazz:colon">
       <li>
@@ -358,7 +358,7 @@ exports[`webpack compilation 1`] = `
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src="bundle.js"></script></body>
+  </body>
 </html>
 "
 `;

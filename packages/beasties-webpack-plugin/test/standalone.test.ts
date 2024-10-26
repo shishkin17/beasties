@@ -20,14 +20,17 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { compile, compileToHtml, readFile } from './helpers'
 
 function configure(config: webpack.Configuration) {
-  config.module!.rules.push(
+  config.module!.rules!.push(
     {
       test: /\.css$/,
       loader: 'css-loader',
     },
     {
       test: /\.html$/,
-      loader: 'file-loader?name=[name].[ext]',
+      loader: 'file-loader',
+      options: {
+        name: '[name].[ext]',
+      }
     },
   )
 }

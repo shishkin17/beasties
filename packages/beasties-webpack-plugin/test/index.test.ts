@@ -16,19 +16,21 @@
 
 import type { Configuration } from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-// @ts-expect-error missing types will provide when upgrading to webpack v5
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { compile, compileToHtml, readFile } from './helpers'
 
 function configure(config: Configuration) {
-  config.module!.rules!.push({
+  config.module ||= {}
+  config.module.rules ||= []
+  config.module.rules.push({
     test: /\.css$/,
     use: [MiniCssExtractPlugin.loader, 'css-loader'],
   })
 
-  config.plugins!.push(
+  config.plugins ||= []
+  config.plugins.push(
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[name].chunk.css',
