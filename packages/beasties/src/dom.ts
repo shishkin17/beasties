@@ -36,14 +36,14 @@ function buildCache(container: Node | HTMLDocument) {
   while (queue.length) {
     const node = queue.shift()!
 
-    if (node.hasAttribute('class')) {
+    if (node.hasAttribute?.('class')) {
       const classList = node.getAttribute('class').trim().split(' ')
       classList.forEach((cls) => {
         classCache!.add(cls)
       })
     }
 
-    if (node.hasAttribute('id')) {
+    if (node.hasAttribute?.('id')) {
       const id = node.getAttribute('id').trim()
       idCache.add(id)
     }
@@ -71,8 +71,8 @@ export function createDocument(html: string) {
   let beastiesContainer: Node | HTMLDocument = document.querySelector('[data-beasties-container]') as Node
 
   if (!beastiesContainer) {
-    document.documentElement.setAttribute('data-beasties-container', '')
-    beastiesContainer = document.documentElement
+    document.documentElement?.setAttribute('data-beasties-container', '')
+    beastiesContainer = document.documentElement || document
   }
 
   document.beastiesContainer = beastiesContainer
@@ -251,7 +251,7 @@ export interface HTMLDocument extends ParsedDocument {
   nodeType: 9
   contentType: 'text/html'
   nodeName: '#document'
-  documentElement: HTMLDocument
+  documentElement?: HTMLDocument
   head: Element
   body: Element
   createElement: (name: string) => Element
@@ -259,7 +259,7 @@ export interface HTMLDocument extends ParsedDocument {
   exists: (sel: string) => boolean
   querySelector: (sel: string) => Node
   querySelectorAll: (sel: string) => Node[]
-  beastiesContainer?: HTMLDocument | Node
+  beastiesContainer: HTMLDocument | Node
 }
 
 function extendDocument(document: ParsedDocument): asserts document is HTMLDocument {

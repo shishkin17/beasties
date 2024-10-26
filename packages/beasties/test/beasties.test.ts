@@ -61,6 +61,21 @@ describe('beasties', () => {
     expect(result).toMatchSnapshot()
   })
 
+  it('works with an html snippet', async () => {
+    const beasties = new Beasties()
+    const result = await beasties.process(trim`
+      <style>
+        .red { color: red }
+        .blue { color: blue }
+      </style>
+      <div class="blue">I'm Blue</div>
+    `)
+    expect(result).toMatchInlineSnapshot(`
+      "<style>.blue{color:blue}</style>
+      <div class="blue">I'm Blue</div>"
+    `)
+  })
+
   it('run on HTML file', async () => {
     const beasties = new Beasties({
       reduceInlineStyles: false,
