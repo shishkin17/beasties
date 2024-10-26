@@ -17,7 +17,7 @@
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import Beasties from 'beasties'
-import { minimatch } from 'minimatch'
+import { minimatch } from 'minimatch'
 import log from 'webpack-log'
 import sources from 'webpack-sources'
 import { tap } from './util'

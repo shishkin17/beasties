@@ -10,7 +10,7 @@ import Beasties from '../src/index'
 function hasEvilScript(html: string) {
   const $ = cheerio.load(html, { scriptingEnabled: true })
   const scripts = Array.from($('script'))
-  return scripts.some((s) => (s as unknown as HTMLScriptElement).textContent?.trim() === 'alert(1)')
+  return scripts.some(s => (s as unknown as HTMLScriptElement).textContent?.trim() === 'alert(1)')
 }
 
 describe('beasties', () => {
