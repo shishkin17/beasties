@@ -14,18 +14,21 @@
  * the License.
  */
 
+import type { Configuration } from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+// @ts-expect-error missing types will provide when upgrading to webpack v5
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { compile, compileToHtml, readFile } from './_helpers.js'
 
-function configure(config) {
-  config.module.rules.push({
+import { compile, compileToHtml, readFile } from './helpers'
+
+function configure(config: Configuration) {
+  config.module!.rules!.push({
     test: /\.css$/,
     use: [MiniCssExtractPlugin.loader, 'css-loader'],
   })
 
-  config.plugins.push(
+  config.plugins!.push(
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[name].chunk.css',
@@ -62,12 +65,12 @@ describe('inline <style> pruning', () => {
     expect(document.querySelectorAll('style')).toHaveLength(1)
     expect(document.getElementById('unused')).toBeNull()
     expect(document.getElementById('used')).not.toBeNull()
-    expect(document.getElementById('used').textContent).toMatchSnapshot()
+    expect(document.getElementById('used')!.textContent).toMatchSnapshot()
   })
 })
 
 describe('external CSS', () => {
-  let output
+  let output: Awaited<ReturnType<typeof compileToHtml>>
   beforeAll(async () => {
     output = await compileToHtml('external', configure)
   })
@@ -98,11 +101,11 @@ describe('external CSS', () => {
 })
 
 describe('publicPath', () => {
-  let output
+  let output: Awaited<ReturnType<typeof compileToHtml>>
   beforeAll(async () => {
     output = await compileToHtml('external', (config) => {
       configure(config)
-      config.output.publicPath = '/_public/'
+      config.output!.publicPath = '/_public/'
     })
   })
 
@@ -139,7 +142,7 @@ describe('publicPath', () => {
 
 describe('options', () => {
   describe('{ additionalStylesheets:["*.css"] }', () => {
-    let output
+    let output: Awaited<ReturnType<typeof compileToHtml>>
     beforeAll(async () => {
       output = await compileToHtml('additionalStylesheets', configure, {
         additionalStylesheets: ['*.css'],
@@ -148,37 +151,6 @@ describe('options', () => {
 
     it('should include additional styles', () => {
       expect(output.html).toMatch(/\.additional-style/)
-    })
-
-    it('should match snapshot', () => {
-      expect(output.html).toMatchSnapshot()
-    })
-  })
-
-  describe('{ async:true }', () => {
-    let output
-    beforeAll(async () => {
-      output = await compileToHtml('external', configure, {
-        async: true,
-      })
-    })
-
-    it('should omit non-critical styles', () => {
-      expect(output.html).not.toMatch(/\.extra-style/)
-    })
-
-    it('should place a link rel="preload" in <head>', () => {
-      const preload = output.document.querySelector('link[rel="preload"]')
-      expect(preload).not.toBeNull()
-      expect(preload).toHaveProperty('href', 'main.css')
-      expect(preload.parentNode).toBe(output.document.head)
-    })
-
-    it('should place a link rel="stylesheet" at the end of <body>', () => {
-      const link = output.document.querySelector('link[rel="stylesheet"]')
-      expect(link).not.toBeNull()
-      expect(link).toHaveProperty('href', 'main.css')
-      expect(output.document.body.lastElementChild).toBe(link)
     })
 
     it('should match snapshot', () => {

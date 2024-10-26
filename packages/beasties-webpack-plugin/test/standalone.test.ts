@@ -14,11 +14,13 @@
  * the License.
  */
 
+import type webpack from 'webpack'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { compile, compileToHtml, readFile } from './_helpers.js'
 
-function configure(config) {
-  config.module.rules.push(
+import { compile, compileToHtml, readFile } from './helpers'
+
+function configure(config: webpack.Configuration) {
+  config.module!.rules.push(
     {
       test: /\.css$/,
       loader: 'css-loader',
@@ -37,7 +39,7 @@ it('webpack compilation', async () => {
 })
 
 describe('usage without html-webpack-plugin', () => {
-  let output
+  let output: Awaited<ReturnType<typeof compileToHtml>>
   beforeAll(async () => {
     output = await compileToHtml('raw', configure)
   })
@@ -47,7 +49,7 @@ describe('usage without html-webpack-plugin', () => {
     expect(document.querySelectorAll('style')).toHaveLength(1)
     expect(document.getElementById('unused')).toBeNull()
     expect(document.getElementById('used')).not.toBeNull()
-    expect(document.getElementById('used').textContent).toMatchSnapshot()
+    expect(document.getElementById('used')!.textContent).toMatchSnapshot()
     expect(html).toMatchSnapshot()
   })
 })
