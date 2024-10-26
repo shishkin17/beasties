@@ -30,8 +30,6 @@ export default class Beasties {
   options: Options & Required<Pick<Options, 'logLevel' | 'path' | 'publicPath' | 'reduceInlineStyles' | 'pruneSource' | 'additionalStylesheets'>> & { allowRules: Array<string | RegExp> }
   logger: Logger
   fs?: typeof import('node:fs')
-  // TODO: remove (undocumented) support
-  urlFilter: (url: string) => boolean
 
   constructor(options: Options = {}) {
     this.options = Object.assign({
@@ -43,12 +41,6 @@ export default class Beasties {
       additionalStylesheets: [],
       allowRules: [],
     }, options)
-
-    // @ts-expect-error TODO: remove support
-    this.urlFilter = this.options.filter
-    if (this.urlFilter instanceof RegExp) {
-      this.urlFilter = this.urlFilter.test.bind(this.urlFilter)
-    }
 
     this.logger = this.options.logger || createLogger(this.options.logLevel)
   }
@@ -246,7 +238,7 @@ export default class Beasties {
     const preloadMode = this.options.preload
 
     // skip filtered resources, or network resources if no filter is provided
-    if (this.urlFilter ? this.urlFilter(href) : !href?.endsWith('.css')) {
+    if (!href?.endsWith('.css')) {
       return undefined
     }
 
