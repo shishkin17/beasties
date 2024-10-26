@@ -30,7 +30,7 @@ function configure(config: webpack.Configuration) {
       loader: 'file-loader',
       options: {
         name: '[name].[ext]',
-      }
+      },
     },
   )
 }
