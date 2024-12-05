@@ -69,13 +69,13 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3
       htmlparser2:
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: 9.1.0
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
       postcss:
-        specifier: ^8.4.47
+        specifier: ^8.4.49
         version: 8.4.49
       postcss-media-query-parser:
         specifier: ^0.2.3
