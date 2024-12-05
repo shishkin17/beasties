@@ -19,7 +19,7 @@ export interface Logger {
   silent?: (message: string) => void
 }
 
-export const defaultLogger = {
+const defaultLogger = {
   trace(msg) {
     // eslint-disable-next-line no-console
     console.trace(msg)

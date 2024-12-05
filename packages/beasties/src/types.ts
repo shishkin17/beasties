@@ -14,7 +14,7 @@ import type { Logger, LogLevel } from './util'
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
  * - **false:** Disables adding preload tags.
  */
-export type PreloadStrategy = 'body' | 'media' | 'swap' | 'swap-high' | 'js' | 'js-lazy'
+type PreloadStrategy = 'body' | 'media' | 'swap' | 'swap-high' | 'js' | 'js-lazy'
 
 /**
  * Controls which keyframes rules are inlined.
@@ -23,7 +23,7 @@ export type PreloadStrategy = 'body' | 'media' | 'swap' | 'swap-high' | 'js' | '
  * - **"all":** Inline all keyframes rules.
  * - **"none":** Remove all keyframes rules.
  */
-export type KeyframeStrategy = 'critical' | 'all' | 'none'
+type KeyframeStrategy = 'critical' | 'all' | 'none'
 
 /** All optional. Pass them to `new Beasties({ ... })`. */
 export interface Options {
@@ -101,4 +101,4 @@ export interface Options {
   logger?: Logger
 }
 
-export type { Logger, LogLevel }
+export type { Logger }

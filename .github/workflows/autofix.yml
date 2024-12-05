@@ -34,6 +34,9 @@ jobs:
       - name: 🔠 Lint project
         run: pnpm lint --fix
 
+      - name: ⚙️ Check engine ranges
+        run: pnpm installed-check --fix
+
       - uses: autofix-ci/action@ff86a557419858bb967097bfc916833f5647fa8c
         with:
           commit-message: 'chore: apply automated fixes'

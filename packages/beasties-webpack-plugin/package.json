@@ -44,6 +44,9 @@
     "dist",
     "src"
   ],
+  "engines": {
+    "node": "^20.0.0 || >=22.0.0"
+  },
   "scripts": {
     "build": "microbundle --target node --no-sourcemap -f cjs,esm",
     "docs": "documentation readme src -q --no-markdown-toc -a public -s Usage --sort-order alpha",

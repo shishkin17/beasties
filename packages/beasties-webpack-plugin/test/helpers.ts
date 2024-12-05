@@ -31,7 +31,7 @@ const cwd = fileURLToPath(new URL('.', import.meta.url))
 const { window } = new JSDOM()
 
 // parse a string into a JSDOM Document
-export function parseDom(html: string) {
+function parseDom(html: string) {
   return new window.DOMParser().parseFromString(html, 'text/html')
 }
 

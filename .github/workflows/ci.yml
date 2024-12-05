@@ -61,6 +61,9 @@ jobs:
           run: pnpm vitest bench
           token: ${{ secrets.CODSPEED_TOKEN }}
 
+      - name: ⚙️ Check engine ranges
+        run: pnpm installed-check
+
       - name: 🟩 Coverage
         if: matrix.os != 'windows-latest'
         uses: codecov/codecov-action@v5
