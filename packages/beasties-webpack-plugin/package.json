@@ -1,6 +1,6 @@
 {
   "name": "beasties-webpack-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
   "author": "The Chromium Authors",
   "contributors": [
