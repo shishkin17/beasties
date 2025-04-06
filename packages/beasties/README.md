@@ -101,6 +101,7 @@ All optional. Pass them to `new Beasties({ ... })`.
 - `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a single `<style>` tag _(default: `true`)_
 - `additionalStylesheets` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Glob for matching other stylesheets to be used while looking for critical CSS.
 - `reduceInlineStyles` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option indicates if inline styles should be evaluated for critical CSS. By default inline style tags will be evaluated and rewritten to only contain critical CSS. Set it to `false` to skip processing inline styles. _(default: `true`)_
+- `allowRules` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | [RegExp](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)>** Always include rules matching these selectors or patterns in the critical CSS, regardless of whether they match elements in the document. _(default: `[]`)_
 - `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
 - `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
 - `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules _(default: `false`)_
@@ -171,6 +172,24 @@ Including/Excluding multiple rules by adding start and end markers
 
 /* beasties:include end */
 ```
+
+### Programmatically including rules with allowRules
+
+In addition to comment-based inclusion, you can use the `allowRules` option to programmatically include specific selectors or patterns in the critical CSS, regardless of whether they match elements in the document. This is useful for cases where you know certain styles should always be included.
+
+```js
+const beasties = new Beasties({
+  // Always include these selectors in critical CSS
+  allowRules: [
+    // Exact selector match
+    '.always-include',
+    // Regular expression pattern
+    /^\.modal-/
+  ]
+})
+```
+
+With this configuration, any CSS rules with selectors that match `.always-include` exactly or start with `.modal-` will be included in the critical CSS, even if no matching elements exist in the document.
 
 ### Beasties container
 
