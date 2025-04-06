@@ -77,6 +77,11 @@ export interface Options {
    */
   preloadFonts?: boolean
   /**
+   * Always include rules matching these selectors or patterns in the critical CSS, regardless of whether they match elements in the document.
+   * @default []
+   */
+  allowRules?: Array<string | RegExp>
+  /**
    * Shorthand for setting `inlineFonts` + `preloadFonts`
    * - Values:
    * - `true` to inline critical font-face rules and preload the fonts
