@@ -27,6 +27,7 @@ import { createDocument, serializeDocument } from './dom'
 import { createLogger, isSubpath } from './util'
 
 const removePseudoClassesAndElementsPattern = /(?<!\\)::?[a-z-]+(?:\(.+\))?/gi
+const doubleNestingPattern = />\s*(?=>|$)/g
 const removeTrailingCommasPattern = /\(\s*,|,\s*\)/g
 
 export default class Beasties {
@@ -687,6 +688,8 @@ export default class Beasties {
     normalizedSelector = sel
       .replace(removePseudoClassesAndElementsPattern, '')
       .replace(removeTrailingCommasPattern, match => (match.includes('(') ? '(' : ')'))
+      // in case an entire selector is a pseudo-class we need to preserve it
+      .replace(doubleNestingPattern, '> *')
       .trim() as string
 
     this.#selectorCache.set(sel, normalizedSelector)
