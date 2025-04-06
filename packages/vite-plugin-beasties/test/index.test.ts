@@ -24,13 +24,7 @@ describe('vite-plugin-beasties', () => {
         write: false,
       },
       plugins: [
-        beasties({
-          options: {
-            inlineThreshold: 5000,
-            ...options.options,
-          },
-          ...options,
-        }),
+        beasties(options),
       ],
     }) as RollupOutput
 
@@ -56,16 +50,16 @@ describe('vite-plugin-beasties', () => {
     const hasCssColor = html?.includes('color: blue') || html?.includes('color:#00f')
     expect(hasCssColor).toBe(true)
 
+    // prunes source
+    const css = output.find(file => file.fileName.endsWith('.css')) as any
+    expect(css.source.trim()).toMatchInlineSnapshot(`""`)
+  })
+
+  it('allows disabling pruning of source CSS files during the build', async () => {
+    const { output } = await runViteBuild({ options: { pruneSource: false } })
     const css = output.find(file => file.fileName.endsWith('.css')) as any
 
     expect(css.source.trim()).toMatchInlineSnapshot(`".test-content{color:#00f;font-weight:700}"`)
-  })
-
-  it('prunes CSS files during the build', async () => {
-    const { output } = await runViteBuild({ options: { pruneSource: true } })
-    const css = output.find(file => file.fileName.endsWith('.css')) as any
-
-    expect(css.source.trim()).toMatchInlineSnapshot(`""`)
   })
 
   it('respects the filter option', async () => {

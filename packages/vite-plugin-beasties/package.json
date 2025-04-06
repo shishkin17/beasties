@@ -31,6 +31,7 @@
   },
   "scripts": {
     "build": "unbuild",
+    "build:stub": "unbuild --stub",
     "dev": "vitest dev",
     "lint": "eslint . --fix",
     "prepare": "simple-git-hooks",

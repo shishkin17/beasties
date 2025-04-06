@@ -28,6 +28,7 @@ export function beasties(options: ViteBeastiesOptions = {}): Plugin {
     configResolved(resolvedConfig) {
       config = resolvedConfig
       beastiesInstance = new Beasties({
+        pruneSource: true,
         ...options.options,
         path: config.build.outDir,
         publicPath: config.base,
