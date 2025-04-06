@@ -312,6 +312,7 @@ export default class Beasties {
       }
       else if (preloadMode === 'swap') {
         link.setAttribute('onload', 'this.rel=\'stylesheet\'')
+        updateLinkToPreload = true
         noscriptFallback = true
       }
       else {
