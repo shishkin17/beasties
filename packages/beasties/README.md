@@ -56,6 +56,42 @@ console.log(inlined)
 // "<style>.blue{color:blue}</style><div class=\"blue\">I'm Blue</div>"
 ```
 
+## Usage with Vite
+
+Beasties can be used with Vite through a plugin. First, install the necessary packages:
+
+```bash
+# npm
+npm install -D vite-plugin-beasties
+
+# yarn
+yarn add -D vite-plugin-beasties
+
+# pnpm
+pnpm add -D vite-plugin-beasties
+```
+
+Then add the plugin to your Vite configuration:
+
+```js
+// vite.config.ts
+import { defineConfig } from 'vite'
+import { beasties } from 'vite-plugin-beasties'
+
+export default defineConfig({
+  plugins: [
+    beasties({
+      // optional beasties configuration
+      options: {
+        preload: 'swap',
+      }
+    })
+  ]
+})
+```
+
+The plugin will process the output for your `index.html` and inline critical CSS while lazy-loading the rest.
+
 ## Usage with webpack
 
 Beasties is also available as a Webpack plugin called [beasties-webpack-plugin](https://www.npmjs.org/package/beasties-webpack-plugin). [![npm](https://img.shields.io/npm/v/beasties-webpack-plugin.svg)](https://www.npmjs.org/package/beasties-webpack-plugin)
