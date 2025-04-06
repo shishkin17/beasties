@@ -58,20 +58,9 @@ console.log(inlined)
 
 ## Usage with Vite
 
-Beasties can be used with Vite through a plugin. First, install the necessary packages:
+Beasties can be used with Vite through [vite-plugin-beasties](https://www.npmjs.org/package/vite-plugin-beasties). [![npm](https://img.shields.io/npm/v/vite-plugin-beasties.svg)](https://www.npmjs.org/package/vite-plugin-beasties)
 
-```bash
-# npm
-npm install -D vite-plugin-beasties
-
-# yarn
-yarn add -D vite-plugin-beasties
-
-# pnpm
-pnpm add -D vite-plugin-beasties
-```
-
-Then add the plugin to your Vite configuration:
+Just add it to your Vite configuration:
 
 ```js
 // vite.config.ts
