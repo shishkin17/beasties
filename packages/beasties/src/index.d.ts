@@ -40,6 +40,10 @@ export default class Beasties {
    * Override this method to customise how beasties prunes the content of source files.
    */
   pruneSource(style: Node, before: string, sheetInverse: string): boolean
+  /**
+   * Override this method to customise how beasties prunes the content of source files.
+   */
+  checkInlineThreshold(link: Node, style: Node, sheet: string): boolean
 }
 
 export interface Options {
