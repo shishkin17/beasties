@@ -64,10 +64,36 @@ export function beasties(options: ViteBeastiesOptions = {}): Plugin {
             delete bundle[name]
             return true
           }
-          bundle[name]!.source = sheetInverse
+          else if (!sheetInverse.length) {
+            delete bundle[name]
+            return true
+          }
+          else {
+            bundle[name]!.source = sheetInverse
+          }
         }
         else {
           console.warn(`pruneSource is enabled, but a style (${name}) has no corresponding asset.`)
+        }
+
+        return isStyleInlined
+      }
+
+      const originalCheckInline = beastiesInstance.checkInlineThreshold.bind(beastiesInstance)
+      beastiesInstance.checkInlineThreshold = function checkInlineThreshold(style, before, sheetInverse) {
+        const isStyleInlined = originalCheckInline(style, before, sheetInverse)
+
+        if (isStyleInlined || !sheetInverse.length) {
+          // @ts-expect-error internal property
+          const name = style.$$name.replace(/^\//, '') as string
+          if (name in bundle && bundle[name]!.type === 'asset') {
+            delete bundle[name]
+          }
+          else {
+            console.warn(
+              `${name} was not found in assets. the resource may still be emitted but will be unreferenced.`,
+            )
+          }
         }
 
         return isStyleInlined

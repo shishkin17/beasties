@@ -47,12 +47,22 @@ describe('vite-plugin-beasties', () => {
     expect(html).toContain('<style>')
     expect(html).toContain('.test-content')
 
+    expect(html).not.toContain('.css')
+
     const hasCssColor = html?.includes('color: blue') || html?.includes('color:#00f')
     expect(hasCssColor).toBe(true)
 
+    const files = output.map(f => f.fileName.replace(/-[^.]+/, ''))
+    expect(files).toMatchInlineSnapshot(`
+      [
+        "assets/index.js",
+        "index.html",
+      ]
+    `)
+
     // prunes source
     const css = output.find(file => file.fileName.endsWith('.css')) as any
-    expect(css.source.trim()).toMatchInlineSnapshot(`""`)
+    expect(css?.source.trim()).toMatchInlineSnapshot(`undefined`)
   })
 
   it('allows disabling pruning of source CSS files during the build', async () => {
