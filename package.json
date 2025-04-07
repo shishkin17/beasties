@@ -29,7 +29,9 @@
     "lint": "eslint .",
     "release": "bumpp -r && pnpm -r publish",
     "test": "vitest --coverage",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc --noEmit",
+    "test:knip": "knip",
+    "test:versions": "installed-check --no-include-workspace-root --ignore-dev"
   },
   "devDependencies": {
     "@antfu/eslint-config": "4.11.0",
@@ -49,7 +51,8 @@
     "vitest": "3.1.1"
   },
   "resolutions": {
-    "beasties": "workspace:*"
+    "beasties": "workspace:*",
+    "vite-plugin-beasties": "link:."
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"

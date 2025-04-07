@@ -62,7 +62,7 @@ jobs:
           token: ${{ secrets.CODSPEED_TOKEN }}
 
       - name: ⚙️ Check engine ranges
-        run: pnpm installed-check --no-include-workspace-root --ignore-dev
+        run: pnpm test:versions
 
       - name: 🟩 Coverage
         if: matrix.os != 'windows-latest'
