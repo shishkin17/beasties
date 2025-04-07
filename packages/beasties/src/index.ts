@@ -184,10 +184,7 @@ export default class Beasties {
   }
 
   checkInlineThreshold(link: Node, style: Node, sheet: string) {
-    if (
-      this.options.inlineThreshold
-      && sheet.length < this.options.inlineThreshold
-    ) {
+    if (this.options.inlineThreshold && sheet.length < this.options.inlineThreshold) {
       const href = style.$$name
       style.$$reduce = false
       this.logger.info?.(
@@ -329,6 +326,7 @@ export default class Beasties {
         bodyLink.removeAttribute('id')
 
         document.body.appendChild(bodyLink)
+        style.$$links.push(bodyLink)
         updateLinkToPreload = true
       }
     }
@@ -361,24 +359,24 @@ export default class Beasties {
     // if external stylesheet would be below minimum size, just inline everything
     const minSize = this.options.minimumExternalSize
     const name = style.$$name
-    if (minSize && sheetInverse.length < minSize) {
+    const shouldInline = minSize && sheetInverse.length < minSize
+    if (shouldInline) {
       this.logger.info?.(
         `\u001B[32mInlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001B[39m`,
       )
+    }
+    if (shouldInline || !sheetInverse) {
       style.textContent = before
       // remove any associated external resources/loaders:
       if (style.$$links) {
         for (const link of style.$$links) {
           const parent = link.parentNode
-          if (parent)
-            parent.removeChild(link)
+          parent?.removeChild(link)
         }
       }
-
-      return true
     }
 
-    return false
+    return !!shouldInline
   }
 
   /**
