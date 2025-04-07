@@ -231,13 +231,6 @@ export default class Beasties {
    */
   async embedLinkedStylesheet(link: ChildNode, document: HTMLDocument) {
     const href = link.getAttribute('href')
-    let media: string | undefined = link.getAttribute('media')
-
-    if (media && !validateMediaQuery(media)) {
-      media = undefined
-    }
-
-    const preloadMode = this.options.preload
 
     // skip filtered resources, or network resources if no filter is provided
     if (!href?.endsWith('.css')) {
@@ -262,6 +255,12 @@ export default class Beasties {
       return
     }
 
+    let media: string | undefined = link.getAttribute('media')
+
+    if (media && !validateMediaQuery(media)) {
+      media = undefined
+    }
+    const preloadMode = this.options.preload
     // CSS loader is only injected for the first sheet, then this becomes an empty string
     let cssLoaderPreamble
       = 'function $loadcss(u,m,l){(l=document.createElement(\'link\')).rel=\'stylesheet\';l.href=u;document.head.appendChild(l)}'
