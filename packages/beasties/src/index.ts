@@ -649,14 +649,15 @@ export default class Beasties {
         afterText = `, reducing non-inlined size ${percent | 0}% to ${formatSize(sheetInverse.length)}`
       }
 
-      const cssFilePath = path.join(this.options.path, name);
+      const cssFilePath = path.join(this.options.path, name)
       writeFile(cssFilePath, sheetInverse, (error: NodeJS.ErrnoException | null) => {
         if (error) {
-          this.logger.error?.(error);
-        } else {
-          this.logger.info?.(`${name} was successfully updated`);
+          this.logger.error?.(error)
         }
-      });
+        else {
+          this.logger.info?.(`${name} was successfully updated`)
+        }
+      })
     }
 
     // replace the inline stylesheet with its critical'd counterpart
