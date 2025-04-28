@@ -19,7 +19,7 @@ import type { ChildNode, Node } from 'domhandler'
 import type { HTMLDocument } from './dom'
 import type { Logger, Options } from './types'
 
-import { readFile } from 'node:fs'
+import { readFile, writeFile } from 'node:fs'
 import path from 'node:path'
 
 import { applyMarkedSelectors, markOnly, parseStylesheet, serializeStylesheet, validateMediaQuery, walkStyleRules, walkStyleRulesWithReverseMirror } from './css'
@@ -648,6 +648,15 @@ export default class Beasties {
         const percent = (sheetInverse.length / before.length) * 100
         afterText = `, reducing non-inlined size ${percent | 0}% to ${formatSize(sheetInverse.length)}`
       }
+
+      const cssFilePath = path.join(this.options.path, name);
+      writeFile(cssFilePath, sheetInverse, (error: NodeJS.ErrnoException | null) => {
+        if (error) {
+          this.logger.error?.(error);
+        } else {
+          this.logger.info?.(`${name} was successfully updated`);
+        }
+      });
     }
 
     // replace the inline stylesheet with its critical'd counterpart
