@@ -73,6 +73,27 @@ export default class Beasties {
   }
 
   /**
+   * Write content to a file
+   */
+  writeFile(filename: string, data: string): Promise<void> {
+    const fs = this.fs
+    return new Promise<void>((resolve, reject) => {
+      // eslint-disable-next-line
+      const callback = (err: NodeJS.ErrnoException | null) => {
+        if (err)
+          reject(err)
+        else resolve()
+      }
+      if (fs && fs.writeFile) {
+        fs.writeFile(filename, data, callback)
+      }
+      else {
+        writeFile(filename, data, callback)
+      }
+    })
+  }
+
+  /**
    * Apply critical CSS processing to the html
    */
   async process(html: string) {
@@ -649,15 +670,10 @@ export default class Beasties {
         afterText = `, reducing non-inlined size ${percent | 0}% to ${formatSize(sheetInverse.length)}`
       }
 
-      const cssFilePath = path.join(this.options.path, name)
-      writeFile(cssFilePath, sheetInverse, (error: NodeJS.ErrnoException | null) => {
-        if (error) {
-          this.logger.error?.(error)
-        }
-        else {
-          this.logger.info?.(`${name} was successfully updated`)
-        }
-      })
+      const cssFilePath = path.resolve(this.options.path, name)
+      this.writeFile(cssFilePath, sheetInverse)
+        .then(() => this.logger.info?.(`${name} was successfully updated`))
+        .catch(err => this.logger.error?.(err))
     }
 
     // replace the inline stylesheet with its critical'd counterpart
