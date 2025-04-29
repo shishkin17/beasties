@@ -78,7 +78,6 @@ export default class Beasties {
   writeFile(filename: string, data: string): Promise<void> {
     const fs = this.fs
     return new Promise<void>((resolve, reject) => {
-      // eslint-disable-next-line
       const callback = (err: NodeJS.ErrnoException | null) => {
         if (err)
           reject(err)
